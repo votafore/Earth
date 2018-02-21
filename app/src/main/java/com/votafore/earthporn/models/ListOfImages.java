@@ -5,10 +5,10 @@ package com.votafore.earthporn.models;
  * Created on 21.02.2018.
  */
 
-public class Child {
+public class ListOfImages {
 
     private String kind;
-    private Data_ data;
+    private Data data;
 
     public String getKind() {
         return kind;
@@ -18,12 +18,11 @@ public class Child {
         this.kind = kind;
     }
 
-    public Data_ getData() {
+    public Data getData() {
         return data;
     }
 
-    public void setData(Data_ data) {
+    public void setData(Data data) {
         this.data = data;
     }
-
 }
