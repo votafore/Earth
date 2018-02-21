@@ -1,8 +1,6 @@
 package com.votafore.earthporn;
 
-import android.app.Activity;
 import android.app.Application;
-import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
@@ -12,7 +10,6 @@ import com.votafore.earthporn.models.Child;
 import com.votafore.earthporn.utils.RVAdapter;
 import com.votafore.earthporn.models.ListOfImages;
 import com.votafore.earthporn.models.ImageItem;
-import com.votafore.earthporn.views.IImageListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,49 +37,18 @@ public class App extends Application {
         earthService = new ServiceEarthPorn();
         handler      = new Handler();
         adapter      = new RVAdapter(getApplicationContext());
-
-//        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
-//            @Override
-//            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-//                ((IImageListActivity) activity).bindImageListToAdapter(adapter);
-//            }
-//
-//            @Override
-//            public void onActivityStarted(Activity activity) {
-//
-//            }
-//
-//            @Override
-//            public void onActivityResumed(Activity activity) {
-//
-//            }
-//
-//            @Override
-//            public void onActivityPaused(Activity activity) {
-//
-//            }
-//
-//            @Override
-//            public void onActivityStopped(Activity activity) {
-//
-//            }
-//
-//            @Override
-//            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-//
-//            }
-//
-//            @Override
-//            public void onActivityDestroyed(Activity activity) {
-//
-//            }
-//        });
-
-        listener = new Callback<ListOfImages>() {
+        listener     = new Callback<ListOfImages>() {
             @Override
             public void onResponse(Call<ListOfImages> call, Response<ListOfImages> response) {
                 Log.d("NEW_DATA", "received: onResponse");
-                final List<ImageItem> list = populateList(response.body());
+
+                final List<ImageItem> list = new ArrayList<>();
+
+                for (Child child: response.body().getData().getChildren()){
+                    ImageItem img = new ImageItem();
+                    img.item = child.getData();
+                    list.add(img);
+                }
 
                 handler.post(new Runnable() {
                     @Override
@@ -110,18 +76,6 @@ public class App extends Application {
         Log.d("NEW_DATA", "send query");
 
         earthService.getApi().getTopImages(100).enqueue(listener);
-    }
-
-    private List<ImageItem> populateList(ListOfImages list){
-
-        List<ImageItem> images = new ArrayList<>();
-        for (Child child: list.getData().getChildren()){
-
-            ImageItem img = new ImageItem();
-            img.item = child.getData();
-            images.add(img);
-        }
-        return images;
     }
 
     public RVAdapter getAdapter(){

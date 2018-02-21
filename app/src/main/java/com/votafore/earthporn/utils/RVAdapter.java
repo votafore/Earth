@@ -2,8 +2,6 @@ package com.votafore.earthporn.utils;
 
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
@@ -27,7 +25,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
 
     private static final int TYPE_FULL = 0;
     private static final int TYPE_HALF = 1;
-    //private static final int TYPE_QUARTER = 2;
 
     private List<ImageItem> images = new ArrayList<>();
     private Context context;

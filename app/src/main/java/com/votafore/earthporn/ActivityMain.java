@@ -3,21 +3,17 @@ package com.votafore.earthporn;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.Button;
-
-import com.votafore.earthporn.utils.RVAdapter;
-import com.votafore.earthporn.views.IImageListActivity;
 
 /**
  * @author votarore
  * Created on 21.02.2018.
  */
 
-public class ActivityMain extends AppCompatActivity { //implements IImageListActivity{
+public class ActivityMain extends AppCompatActivity {
 
     private RecyclerView imageList;
 
@@ -50,9 +46,4 @@ public class ActivityMain extends AppCompatActivity { //implements IImageListAct
         });
     }
 
-
-//    @Override
-//    public void bindImageListToAdapter(RVAdapter adapter) {
-//        imageList.setAdapter(adapter);
-//    }
 }
