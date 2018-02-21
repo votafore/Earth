@@ -1,6 +1,6 @@
 package com.votafore.earthporn.helpers;
 
-import com.votafore.earthporn.models.Child;
+import com.votafore.earthporn.models.ListOfImages;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -14,8 +14,8 @@ import retrofit2.http.Query;
 public interface EarthPornAPI {
 
     @GET("/r/EarthPorn/top/.json")
-    Call<Child> getTopImages(@Query("limit") int value);
+    Call<ListOfImages> getTopImages(@Query("limit") int value);
 
     @GET("/r/EarthPorn/new/.json")
-    Call<Child> getNewImages(@Query("limit") int value);
+    Call<ListOfImages> getNewImages(@Query("limit") int value);
 }
