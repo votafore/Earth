@@ -2,6 +2,7 @@ package com.votafore.earthporn.models;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -20,13 +21,13 @@ import java.lang.ref.WeakReference;
 
 public class ImageItem {
 
-    public Bitmap image;
+    public Drawable image;
     public Data_ item;
 
     public void setImageToImageView(Context context, final WeakReference<ImageView> reference){
         Log.d("NEW_DATA", "setImageToImageView");
 
-        reference.get().setImageBitmap(image);
+        reference.get().setImageDrawable(image);
 
         if (image != null){
             return;
@@ -38,16 +39,18 @@ public class ImageItem {
         Log.d("NEW_DATA", "loadImage");
 
         Glide.with(context)
-                .asBitmap()
+                //.asBitmap()
                 .load(item.getUrl())
-                .into(new SimpleTarget<Bitmap>(width, height) {
+                .thumbnail(Glide.with(context).load(item.getThumbnail()))
+                //.transition(withCrossFade())
+                .into(new SimpleTarget<Drawable>(width, height) {
                     @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        Log.d("NEW_DATA", "onResourceReady");
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+
                         image = resource;
 
                         if (reference.get() != null) {
-                            reference.get().setImageBitmap(image);
+                            reference.get().setImageDrawable(resource);
                         }
                     }
                 });
