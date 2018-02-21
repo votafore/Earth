@@ -39,7 +39,7 @@ public class App extends Application {
 
         earthService = new ServiceEarthPorn();
         handler      = new Handler();
-        adapter      = new RVAdapter();
+        adapter      = new RVAdapter(getApplicationContext());
 
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
@@ -103,13 +103,13 @@ public class App extends Application {
     public void sendRequestForNewImages(){
         Log.d("NEW_DATA", "send query");
 
-        earthService.getApi().getNewImages(100).enqueue(listener);
+        earthService.getApi().getNewImages(20).enqueue(listener);
     }
 
     public void sendRequestForTopImages(){
         Log.d("NEW_DATA", "send query");
 
-        earthService.getApi().getTopImages(100).enqueue(listener);
+        earthService.getApi().getTopImages(20).enqueue(listener);
     }
 
     private List<ImageItem> populateList(ListOfImages list){
@@ -118,8 +118,8 @@ public class App extends Application {
         for (Child child: list.getData().getChildren()){
             ImageItem img = new ImageItem();
             img.item = child.getData();
+            images.add(img);
         }
-
         return images;
     }
 }

@@ -3,6 +3,7 @@ package com.votafore.earthporn;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +31,7 @@ public class ActivityMain extends AppCompatActivity implements IImageListActivit
         imageList.setItemAnimator(new DefaultItemAnimator());
 
         // TODO: set special layout manager
+        imageList.setLayoutManager(new LinearLayoutManager(this));
 
 
         Button btn_getNew = findViewById(R.id.get_new_images);
