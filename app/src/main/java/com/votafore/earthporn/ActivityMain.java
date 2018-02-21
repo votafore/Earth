@@ -2,14 +2,56 @@ package com.votafore.earthporn;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
 
-public class ActivityMain extends AppCompatActivity {
+import com.votafore.earthporn.utils.ListAdapter;
+import com.votafore.earthporn.views.IImageListActivity;
+
+/**
+ * @author votarore
+ * Created on 21.02.2018.
+ */
+
+public class ActivityMain extends AppCompatActivity implements IImageListActivity{
+
+    private RecyclerView imageList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final App app = (App) getApplication();
 
+        imageList = findViewById(R.id.image_list);
+        imageList.setItemAnimator(new DefaultItemAnimator());
+
+        // TODO: set special layout manager
+
+
+        Button btn_getNew = findViewById(R.id.get_new_images);
+        btn_getNew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                app.sendRequestForNewImages();
+            }
+        });
+
+        Button btn_getTop = findViewById(R.id.get_top_images);
+        btn_getTop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                app.sendRequestForTopImages();
+            }
+        });
+    }
+
+
+    @Override
+    public void bindImageListToAdapter(ListAdapter adapter) {
+        imageList.setAdapter(adapter);
     }
 }

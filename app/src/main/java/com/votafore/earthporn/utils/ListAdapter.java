@@ -5,6 +5,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+/**
+ * @author votarore
+ * Created on 21.02.2018.
+ */
+
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder>{
 
 
