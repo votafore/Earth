@@ -7,8 +7,8 @@ import android.graphics.Bitmap;
  * Created on 21.02.2018.
  */
 
-public class ModelAdapterItem {
+public class ImageItem {
 
-    Bitmap image;
-    Data_ item;
+    public Bitmap image;
+    public Data_ item;
 }

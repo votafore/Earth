@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
-import com.votafore.earthporn.utils.ListAdapter;
+import com.votafore.earthporn.utils.RVAdapter;
 import com.votafore.earthporn.views.IImageListActivity;
 
 /**
@@ -51,7 +51,7 @@ public class ActivityMain extends AppCompatActivity implements IImageListActivit
 
 
     @Override
-    public void bindImageListToAdapter(ListAdapter adapter) {
+    public void bindImageListToAdapter(RVAdapter adapter) {
         imageList.setAdapter(adapter);
     }
 }

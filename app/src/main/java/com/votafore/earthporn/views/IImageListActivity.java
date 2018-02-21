@@ -1,7 +1,7 @@
 package com.votafore.earthporn.views;
 
 
-import com.votafore.earthporn.utils.ListAdapter;
+import com.votafore.earthporn.utils.RVAdapter;
 
 /**
  * @author votarore
@@ -10,5 +10,5 @@ import com.votafore.earthporn.utils.ListAdapter;
 
 public interface IImageListActivity {
 
-    void bindImageListToAdapter(ListAdapter adapter);
+    void bindImageListToAdapter(RVAdapter adapter);
 }
