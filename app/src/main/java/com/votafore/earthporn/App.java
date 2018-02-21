@@ -1,6 +1,7 @@
 package com.votafore.earthporn;
 
 import android.app.Application;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,12 +20,15 @@ import retrofit2.Response;
 public class App extends Application {
 
     private ServiceEarthPorn earthService;
+    Handler handler;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         earthService = new ServiceEarthPorn();
+
+        handler = new Handler();
     }
 
     public void sendRequestForNewImages(){
@@ -36,6 +40,14 @@ public class App extends Application {
             public void onResponse(Call<ListOfImages> call, Response<ListOfImages> response) {
 
                 Log.d("NEW_DATA", "received: onResponse");
+
+                populateList(response.body());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // TODO: update adapter
+                    }
+                });
             }
 
             @Override
@@ -55,6 +67,14 @@ public class App extends Application {
             public void onResponse(Call<ListOfImages> call, Response<ListOfImages> response) {
 
                 Log.d("NEW_DATA", "received: onResponse");
+
+                populateList(response.body());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // TODO: update adapter
+                    }
+                });
             }
 
             @Override
@@ -63,5 +83,13 @@ public class App extends Application {
                 Toast.makeText(getApplicationContext(), "failure", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+
+
+
+
+    private void populateList(ListOfImages list){
+        // TODO: not yet implemented
     }
 }
