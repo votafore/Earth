@@ -64,8 +64,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
                             break;
                     }
                     itemView.setLayoutParams(sglp);
-                    final StaggeredGridLayoutManager lm =
-                            (StaggeredGridLayoutManager) ((RecyclerView) parent).getLayoutManager();
+                    final StaggeredGridLayoutManager lm = (StaggeredGridLayoutManager) ((RecyclerView) parent).getLayoutManager();
                     lm.invalidateSpanAssignments();
                 }
                 itemView.getViewTreeObserver().removeOnPreDrawListener(this);

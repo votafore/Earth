@@ -55,7 +55,6 @@ public class App extends Application {
             @Override
             public void onActivityResumed(Activity activity) {
                 ((IImageListActivity) activity).bindImageListToAdapter(adapter);
-                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -117,6 +116,7 @@ public class App extends Application {
 
         List<ImageItem> images = new ArrayList<>();
         for (Child child: list.getData().getChildren()){
+
             ImageItem img = new ImageItem();
             img.item = child.getData();
             img.loadImage(getApplicationContext());
