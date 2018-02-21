@@ -32,7 +32,9 @@ public class ImageItem {
         Log.d("NEW_DATA", "try download the image");
 
         Picasso.with(context)
-                .load(item.getThumbnail())
+                .load(item.getUrl())
+                .resize(350, 150)
+                .centerCrop()
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -40,7 +42,7 @@ public class ImageItem {
                         image = bitmap;
                         if (reference.get() != null){
                             reference.get().setImageBitmap(image);
-                            reference.get().requestLayout();
+//                            reference.get().requestLayout();
                         }
                     }
 
