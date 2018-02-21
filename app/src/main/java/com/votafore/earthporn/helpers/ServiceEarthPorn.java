@@ -1,6 +1,7 @@
 package com.votafore.earthporn.helpers;
 
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author votarore
@@ -16,6 +17,7 @@ public class ServiceEarthPorn {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.reddit.com")
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         api = retrofit.create(EarthPornAPI.class);

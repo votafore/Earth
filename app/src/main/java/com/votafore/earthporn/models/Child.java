@@ -8,7 +8,7 @@ package com.votafore.earthporn.models;
 public class Child {
 
     private String kind;
-    private Data_ data;
+    private Data data;
 
     public String getKind() {
         return kind;
@@ -18,11 +18,11 @@ public class Child {
         this.kind = kind;
     }
 
-    public Data_ getData() {
+    public Data getData() {
         return data;
     }
 
-    public void setData(Data_ data) {
+    public void setData(Data data) {
         this.data = data;
     }
 
