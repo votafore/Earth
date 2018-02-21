@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.Button;
 
@@ -29,10 +30,7 @@ public class ActivityMain extends AppCompatActivity implements IImageListActivit
 
         imageList = findViewById(R.id.image_list);
         imageList.setItemAnimator(new DefaultItemAnimator());
-
-        // TODO: set special layout manager
-        imageList.setLayoutManager(new LinearLayoutManager(this));
-
+        imageList.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         Button btn_getNew = findViewById(R.id.get_new_images);
         btn_getNew.setOnClickListener(new View.OnClickListener() {

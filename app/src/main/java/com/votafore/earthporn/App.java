@@ -49,12 +49,13 @@ public class App extends Application {
 
             @Override
             public void onActivityStarted(Activity activity) {
-                ((IImageListActivity) activity).bindImageListToAdapter(adapter);
+
             }
 
             @Override
             public void onActivityResumed(Activity activity) {
-
+                ((IImageListActivity) activity).bindImageListToAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -103,13 +104,13 @@ public class App extends Application {
     public void sendRequestForNewImages(){
         Log.d("NEW_DATA", "send query");
 
-        earthService.getApi().getNewImages(20).enqueue(listener);
+        earthService.getApi().getNewImages(100).enqueue(listener);
     }
 
     public void sendRequestForTopImages(){
         Log.d("NEW_DATA", "send query");
 
-        earthService.getApi().getTopImages(20).enqueue(listener);
+        earthService.getApi().getTopImages(100).enqueue(listener);
     }
 
     private List<ImageItem> populateList(ListOfImages list){
@@ -118,6 +119,7 @@ public class App extends Application {
         for (Child child: list.getData().getChildren()){
             ImageItem img = new ImageItem();
             img.item = child.getData();
+            img.loadImage(getApplicationContext());
             images.add(img);
         }
         return images;
