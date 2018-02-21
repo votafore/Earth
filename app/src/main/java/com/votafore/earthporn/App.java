@@ -41,42 +41,42 @@ public class App extends Application {
         handler      = new Handler();
         adapter      = new RVAdapter(getApplicationContext());
 
-        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
-            @Override
-            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
-            }
-
-            @Override
-            public void onActivityStarted(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityResumed(Activity activity) {
-                ((IImageListActivity) activity).bindImageListToAdapter(adapter);
-            }
-
-            @Override
-            public void onActivityPaused(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityStopped(Activity activity) {
-
-            }
-
-            @Override
-            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
-            }
-
-            @Override
-            public void onActivityDestroyed(Activity activity) {
-
-            }
-        });
+//        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+//            @Override
+//            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+//                ((IImageListActivity) activity).bindImageListToAdapter(adapter);
+//            }
+//
+//            @Override
+//            public void onActivityStarted(Activity activity) {
+//
+//            }
+//
+//            @Override
+//            public void onActivityResumed(Activity activity) {
+//
+//            }
+//
+//            @Override
+//            public void onActivityPaused(Activity activity) {
+//
+//            }
+//
+//            @Override
+//            public void onActivityStopped(Activity activity) {
+//
+//            }
+//
+//            @Override
+//            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+//
+//            }
+//
+//            @Override
+//            public void onActivityDestroyed(Activity activity) {
+//
+//            }
+//        });
 
         listener = new Callback<ListOfImages>() {
             @Override
@@ -119,9 +119,12 @@ public class App extends Application {
 
             ImageItem img = new ImageItem();
             img.item = child.getData();
-            img.loadImage(getApplicationContext());
             images.add(img);
         }
         return images;
+    }
+
+    public RVAdapter getAdapter(){
+        return adapter;
     }
 }

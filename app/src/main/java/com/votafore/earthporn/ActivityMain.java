@@ -17,7 +17,7 @@ import com.votafore.earthporn.views.IImageListActivity;
  * Created on 21.02.2018.
  */
 
-public class ActivityMain extends AppCompatActivity implements IImageListActivity{
+public class ActivityMain extends AppCompatActivity { //implements IImageListActivity{
 
     private RecyclerView imageList;
 
@@ -31,6 +31,7 @@ public class ActivityMain extends AppCompatActivity implements IImageListActivit
         imageList = findViewById(R.id.image_list);
         imageList.setItemAnimator(new DefaultItemAnimator());
         imageList.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        imageList.setAdapter(app.getAdapter());
 
         Button btn_getNew = findViewById(R.id.get_new_images);
         btn_getNew.setOnClickListener(new View.OnClickListener() {
@@ -50,8 +51,8 @@ public class ActivityMain extends AppCompatActivity implements IImageListActivit
     }
 
 
-    @Override
-    public void bindImageListToAdapter(RVAdapter adapter) {
-        imageList.setAdapter(adapter);
-    }
+//    @Override
+//    public void bindImageListToAdapter(RVAdapter adapter) {
+//        imageList.setAdapter(adapter);
+//    }
 }

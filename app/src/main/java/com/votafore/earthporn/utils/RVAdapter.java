@@ -60,7 +60,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
                             break;
                         case TYPE_HALF:
                             sglp.setFullSpan(false);
-                            //sglp.width = itemView.getWidth() / 2;
                             break;
                     }
                     itemView.setLayoutParams(sglp);

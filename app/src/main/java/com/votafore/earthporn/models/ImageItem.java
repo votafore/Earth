@@ -23,15 +23,14 @@ public class ImageItem {
     public Bitmap image;
     public Data_ item;
 
-    private boolean isLoading = false;
-
     public void setImageToImageView(Context context, final WeakReference<ImageView> reference){
         Log.d("NEW_DATA", "setImageToImageView");
 
         reference.get().setImageBitmap(image);
-    }
 
-    public void loadImage(Context context){
+        if (image != null){
+            return;
+        }
 
         int width = 350;
         int height = 150;
@@ -40,12 +39,16 @@ public class ImageItem {
 
         Glide.with(context)
                 .asBitmap()
-                .load(item.getThumbnail())
+                .load(item.getUrl())
                 .into(new SimpleTarget<Bitmap>(width, height) {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         Log.d("NEW_DATA", "onResourceReady");
                         image = resource;
+
+                        if (reference.get() != null) {
+                            reference.get().setImageBitmap(image);
+                        }
                     }
                 });
     }
