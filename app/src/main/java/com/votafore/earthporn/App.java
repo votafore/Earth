@@ -69,13 +69,13 @@ public class App extends Application {
     public void sendRequestForNewImages(){
         Log.d("NEW_DATA", "send query");
 
-        earthService.getApi().getNewImages(100).enqueue(listener);
+        earthService.getApi().getNewImages(30).enqueue(listener);
     }
 
     public void sendRequestForTopImages(){
         Log.d("NEW_DATA", "send query");
 
-        earthService.getApi().getTopImages(100).enqueue(listener);
+        earthService.getApi().getTopImages(30).enqueue(listener);
     }
 
     public RVAdapter getAdapter(){

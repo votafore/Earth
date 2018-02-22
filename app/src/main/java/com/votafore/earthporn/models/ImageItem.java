@@ -33,17 +33,12 @@ public class ImageItem {
             return;
         }
 
-        int width = 350;
-        int height = 150;
-
         Log.d("NEW_DATA", "loadImage");
 
         Glide.with(context)
-                //.asBitmap()
                 .load(item.getUrl())
                 .thumbnail(Glide.with(context).load(item.getThumbnail()))
-                //.transition(withCrossFade())
-                .into(new SimpleTarget<Drawable>(width, height) {
+                .into(new SimpleTarget<Drawable>() {
                     @Override
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
 
@@ -54,6 +49,5 @@ public class ImageItem {
                         }
                     }
                 });
-//                .into(reference.get());
     }
 }
