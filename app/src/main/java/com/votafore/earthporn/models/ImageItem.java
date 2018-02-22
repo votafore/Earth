@@ -54,5 +54,6 @@ public class ImageItem {
                         }
                     }
                 });
+//                .into(reference.get());
     }
 }

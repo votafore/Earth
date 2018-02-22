@@ -25,6 +25,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
 
     private static final int TYPE_FULL = 0;
     private static final int TYPE_HALF = 1;
+    private static final int TYPE_NORMAL = 2;
 
     private List<ImageItem> images = new ArrayList<>();
     private Context context;
@@ -57,7 +58,10 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
                             break;
                         case TYPE_HALF:
                             sglp.setFullSpan(false);
+                            //sglp.width = (int)(itemView.getWidth() / 2);
                             break;
+//                        case TYPE_NORMAL:
+//                            sglp.setFullSpan(false);
                     }
                     itemView.setLayoutParams(sglp);
                     final StaggeredGridLayoutManager lm = (StaggeredGridLayoutManager) ((RecyclerView) parent).getLayoutManager();
@@ -80,6 +84,17 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
 
     @Override
     public int getItemViewType(int position) {
+
+//        switch (position % 6){
+//            case 0:
+//                return TYPE_FULL;
+//            case 1:
+//            case 2:
+//                return TYPE_HALF;
+//            default:
+//                return TYPE_NORMAL;
+//        }
+
 
         if (position % 3 == 0){
             return TYPE_FULL;
