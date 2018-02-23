@@ -2,6 +2,7 @@ package com.votafore.earthporn.models;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,31 +22,54 @@ import java.lang.ref.WeakReference;
 
 public class ImageItem {
 
-    public Drawable image;
+    public Bitmap image;
     public Data_ item;
 
     public void setImageToImageView(Context context, final WeakReference<ImageView> reference){
         Log.d("NEW_DATA", "setImageToImageView");
 
-        reference.get().setImageDrawable(image);
+        reference.get().setImageBitmap(image);
 
         if (image != null){
             return;
         }
 
+        // adjust width and height
+        Image source = item.getPreview().getImages().get(0);
+
+        int max_width  = 1300;
+        int max_Height = 1200;
+
+        int width = source.getSource().getWidth();
+        int height= source.getSource().getHeight();
+
+        float ratio = (float) width / height;
+
+        if(width > height){
+
+            width = Math.min(max_width, width);
+            height = (int) (width / ratio);
+
+        } else {
+
+            height = Math.min(max_Height, height);
+            width = (int) (height * ratio);
+        }
+
         Log.d("NEW_DATA", "loadImage");
 
         Glide.with(context)
+                .asBitmap()
                 .load(item.getUrl())
-                .thumbnail(Glide.with(context).load(item.getThumbnail()))
-                .into(new SimpleTarget<Drawable>() {
+                .thumbnail(Glide.with(context).asBitmap().load(item.getThumbnail()))
+                .into(new SimpleTarget<Bitmap>(width, height) {
                     @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
 
                         image = resource;
 
                         if (reference.get() != null) {
-                            reference.get().setImageDrawable(resource);
+                            reference.get().setImageBitmap(resource);
                         }
                     }
                 });
