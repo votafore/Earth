@@ -4,14 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -68,32 +66,46 @@ public class ActivityMain extends AppCompatActivity {
         app.getAdapter().setListener(new RVAdapter.OnItemClickListener() {
             @Override
             public void onClick(View item, int position) {
-                //imgView.showImage(Uri.parse(app.getAdapter().getImageItem(position).item.getUrl()));
-                //imgView.getSSIV().setImage(ImageSource.bitmap(app.getAdapter().getImageItem(position).image));
-                imgView.setImageBitmap(app.getAdapter().getImageItem(position).image);
-                //imgView.setVisibility(View.VISIBLE);
 
-                //startTransition(item, imgView);
+                imgView.setImageBitmap(app.getAdapter().getImageItem(position).image);
                 openFullImage(item);
 
                 btn_getNew.setVisibility(View.INVISIBLE);
                 btn_getTop.setVisibility(View.INVISIBLE);
+
+                imageIndex = position;
             }
         });
 
         Display dsp = getWindowManager().getDefaultDisplay();
         finalBounds = new Rect(0,0, dsp.getWidth(), dsp.getHeight());
 
-        imgView.setVisibility(View.INVISIBLE);
+
+        if (savedInstanceState == null) {
+            return;
+        }
+
+        if(savedInstanceState.getBoolean("isFullScreen")){
+            imageIndex = savedInstanceState.getInt("imageIndex");
+            imgView.setImageBitmap(app.getAdapter().getImageItem(imageIndex).image);
+            imgView.setVisibility(View.VISIBLE);
+
+            btn_getNew.setVisibility(View.INVISIBLE);
+            btn_getTop.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     @Override
     public void onBackPressed() {
 
         if (imgView.getVisibility() == View.VISIBLE){
-            //imgView.setVisibility(View.GONE);
 
-            closeFullImage();
+            if (startBounds != null) {
+                closeFullImage();
+            } else {
+                imgView.setVisibility(View.GONE);
+            }
 
             btn_getNew.setVisibility(View.VISIBLE);
             btn_getTop.setVisibility(View.VISIBLE);
@@ -104,19 +116,27 @@ public class ActivityMain extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    private int imageIndex = -1;
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt("imageIndex", imageIndex);
+        outState.putBoolean("isFullScreen", imgView.getVisibility() == View.VISIBLE);
+        super.onSaveInstanceState(outState);
+    }
 
 
 
+    /**************** animation ******************/
 
     private AnimatorSet mCurrentAnimator;
     private long mShortAnimationDuration = 200;
 
+    private Rect finalBounds;
+    private Rect startBounds;
 
-    Rect finalBounds;
-    Rect startBounds;
-
-    float scaleX;
-    float scaleY;
+    private float scaleX;
+    private float scaleY;
 
     private void openFullImage(View thumbnail){
 
@@ -166,6 +186,7 @@ public class ActivityMain extends AppCompatActivity {
     private void closeFullImage(){
 
         if (mCurrentAnimator != null) {
+            imageIndex = -1;
             mCurrentAnimator.cancel();
         }
 
@@ -196,5 +217,7 @@ public class ActivityMain extends AppCompatActivity {
         mCurrentAnimator = set;
 
         imageList.setClickable(true);
+
+        imageIndex = -1;
     }
 }
