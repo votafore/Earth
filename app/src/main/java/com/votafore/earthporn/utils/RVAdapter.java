@@ -29,6 +29,12 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
     private List<ImageItem> images = new ArrayList<>();
     private Context context;
 
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onClick(View item, int position);
+    }
+
     public RVAdapter(Context context){
         this.context = context;
     }
@@ -36,6 +42,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
     public void setImages(List<ImageItem> list){
         images = list;
         notifyDataSetChanged();
+    }
+
+    public void setListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public ImageItem getImageItem(int index){
+        return images.get(index);
     }
 
     @Override
@@ -81,17 +95,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
     @Override
     public int getItemViewType(int position) {
 
-//        switch (position % 6){
-//            case 0:
-//                return TYPE_FULL;
-//            case 1:
-//            case 2:
-//                return TYPE_HALF;
-//            default:
-//                return TYPE_NORMAL;
-//        }
-
-
         if (position % 3 == 0){
             return TYPE_FULL;
         } else {
@@ -111,7 +114,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
         return images.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         ImageView img;
         WeakReference<ImageView> ref;
@@ -120,6 +123,18 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
             super(itemView);
 
             img = itemView.findViewById(R.id.img);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            if (listener == null){
+                return;
+            }
+
+            listener.onClick(this.itemView, getAdapterPosition());
         }
     }
 }

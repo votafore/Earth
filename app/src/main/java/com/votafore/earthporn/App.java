@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.github.piasy.biv.BigImageViewer;
+import com.github.piasy.biv.loader.glide.GlideImageLoader;
 import com.votafore.earthporn.helpers.ServiceEarthPorn;
 import com.votafore.earthporn.models.Child;
 import com.votafore.earthporn.utils.RVAdapter;
@@ -64,6 +66,8 @@ public class App extends Application {
                 Toast.makeText(getApplicationContext(), "failure", Toast.LENGTH_SHORT).show();
             }
         };
+
+        BigImageViewer.initialize(GlideImageLoader.with(getApplicationContext()));
     }
 
     public void sendRequestForNewImages(){

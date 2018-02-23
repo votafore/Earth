@@ -18,6 +18,17 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="#ccc"/>
 
+    <com.github.piasy.biv.view.BigImageView
+        android:id="@+id/full_image"
+        app:optimizeDisplay="true"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:initScaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <Button
         android:id="@+id/get_top_images"
         android:layout_width="0dp"
