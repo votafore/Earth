@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.transition.TransitionInflater;
 import android.transition.TransitionManager;
-import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -81,9 +81,11 @@ public class ActivityMain extends AppCompatActivity {
             }
         });
 
-        Display dsp = getWindowManager().getDefaultDisplay();
-        finalBounds = new Rect(0,0, dsp.getWidth(), dsp.getHeight());
+        // https://stackoverflow.com/questions/1016896/get-screen-dimensions-in-pixels
+        Point size = new Point();
+        getWindowManager().getDefaultDisplay().getRealSize(size);
 
+        finalBounds = new Rect(0,0, size.x, size.y);
 
         if (savedInstanceState == null) {
             return;
@@ -140,7 +142,14 @@ public class ActivityMain extends AppCompatActivity {
 
     private void openFullImage(View thumbnail){
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    |View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    |View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    |View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    |View.SYSTEM_UI_FLAG_FULLSCREEN
+                    |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
         ViewGroup root = findViewById(R.id.container);
 
@@ -181,7 +190,7 @@ public class ActivityMain extends AppCompatActivity {
 
     private void closeFullImage(){
 
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
         ViewGroup root = findViewById(R.id.container);
 
