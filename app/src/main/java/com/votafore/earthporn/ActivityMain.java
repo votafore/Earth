@@ -5,16 +5,28 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.graphics.Rect;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.transition.ChangeBounds;
+import android.transition.ChangeImageTransform;
+import android.transition.Fade;
+import android.transition.Scene;
+import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
+import android.transition.TransitionManager;
+import android.transition.TransitionSet;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 
@@ -104,7 +116,7 @@ public class ActivityMain extends AppCompatActivity {
             if (startBounds != null) {
                 closeFullImage();
             } else {
-                imgView.setVisibility(View.GONE);
+            //    imgView.setVisibility(View.GONE);
             }
 
             btn_getNew.setVisibility(View.VISIBLE);
@@ -129,94 +141,82 @@ public class ActivityMain extends AppCompatActivity {
 
     /**************** animation ******************/
 
-    private AnimatorSet mCurrentAnimator;
-    private long mShortAnimationDuration = 200;
-
     private Rect finalBounds;
     private Rect startBounds;
 
-    private float scaleX;
-    private float scaleY;
-
     private void openFullImage(View thumbnail){
 
-        if (mCurrentAnimator != null) {
-            mCurrentAnimator.cancel();
-        }
+        ViewGroup root = findViewById(R.id.container);
 
         startBounds = new Rect();
         thumbnail.getGlobalVisibleRect(startBounds);
         startBounds.offset(0, -50);
 
-        scaleX = (float) startBounds.width() / finalBounds.width();
-        scaleY = (float) startBounds.height() / finalBounds.height();
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) imgView.getLayoutParams();
+
+        layoutParams.width = startBounds.right - startBounds.left;
+        layoutParams.height= startBounds.bottom - startBounds.top;
+
+        imgView.setX(startBounds.left);
+        imgView.setY(startBounds.top);
 
         imgView.setVisibility(View.VISIBLE);
 
-        imgView.setPivotX(0f);
-        imgView.setPivotY(0f);
+        imgView.setLayoutParams(layoutParams);
+
+        TransitionManager.beginDelayedTransition(root, TransitionInflater.from(getApplicationContext()).inflateTransition(R.transition.open_image));
+
+        // TODO: how to set position without extra animation
+
+        layoutParams.width = finalBounds.right;
+        layoutParams.height = finalBounds.bottom - 50;
+
+        imgView.setLayoutParams(layoutParams);
 
         AnimatorSet set = new AnimatorSet();
         set
                 .play(ObjectAnimator.ofFloat(imgView, View.X, startBounds.left, finalBounds.left))
                 .with(ObjectAnimator.ofFloat(imgView, View.Y, startBounds.top, finalBounds.top))
-                .with(ObjectAnimator.ofFloat(imgView, View.SCALE_X, scaleX, 1f))
-                .with(ObjectAnimator.ofFloat(imgView, View.SCALE_Y, scaleY, 1f))
-        //.with(ObjectAnimator.ofFloat(expandedImageView, View.ALPHA, 0f, 1f))
         ;
-        set.setDuration(mShortAnimationDuration);
+        set.setDuration(400);
         set.setInterpolator(new AccelerateDecelerateInterpolator());
-        set.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mCurrentAnimator = null;
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                mCurrentAnimator = null;
-            }
-        });
         set.start();
-        mCurrentAnimator = set;
-
-        imageList.setClickable(false);
     }
 
     private void closeFullImage(){
 
-        if (mCurrentAnimator != null) {
-            imageIndex = -1;
-            mCurrentAnimator.cancel();
-        }
+        ViewGroup root = findViewById(R.id.container);
+
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) imgView.getLayoutParams();
+
+        layoutParams.width = startBounds.right - startBounds.left;
+        layoutParams.height= startBounds.bottom - startBounds.top;
+
+        TransitionManager.beginDelayedTransition(root, TransitionInflater.from(getApplicationContext()).inflateTransition(R.transition.open_image));
+
+        imgView.setLayoutParams(layoutParams);
+
+        // TODO: find out how change position without extra animation object
 
         AnimatorSet set = new AnimatorSet();
         set.play(ObjectAnimator
                 .ofFloat(imgView, View.X, finalBounds.left, startBounds.left))
                 .with(ObjectAnimator.ofFloat(imgView, View.Y,finalBounds.top, startBounds.top))
-                .with(ObjectAnimator.ofFloat(imgView, View.SCALE_X, 1, scaleX))
-                .with(ObjectAnimator.ofFloat(imgView, View.SCALE_Y, 1, scaleY))
-        //.with(ObjectAnimator.ofFloat(imgView, View.ALPHA, 1, 0.6f, 0f))
         ;
-        set.setDuration(mShortAnimationDuration);
-        set.setInterpolator(new DecelerateInterpolator());
+        set.setDuration(400);
+        set.setInterpolator(new AccelerateDecelerateInterpolator());
         set.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 imgView.setVisibility(View.GONE);
-                mCurrentAnimator = null;
             }
 
             @Override
             public void onAnimationCancel(Animator animation) {
                 imgView.setVisibility(View.GONE);
-                mCurrentAnimator = null;
             }
         });
         set.start();
-        mCurrentAnimator = set;
-
-        imageList.setClickable(true);
 
         imageIndex = -1;
     }
