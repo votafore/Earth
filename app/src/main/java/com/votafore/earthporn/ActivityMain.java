@@ -15,6 +15,7 @@ import android.transition.TransitionManager;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -95,6 +96,8 @@ public class ActivityMain extends AppCompatActivity {
 
             btn_getNew.setVisibility(View.INVISIBLE);
             btn_getTop.setVisibility(View.INVISIBLE);
+
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
 
     }
@@ -107,7 +110,7 @@ public class ActivityMain extends AppCompatActivity {
             if (startBounds != null) {
                 closeFullImage();
             } else {
-            //    imgView.setVisibility(View.GONE);
+                imgView.setVisibility(View.GONE);
             }
 
             btn_getNew.setVisibility(View.VISIBLE);
@@ -137,6 +140,8 @@ public class ActivityMain extends AppCompatActivity {
 
     private void openFullImage(View thumbnail){
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         ViewGroup root = findViewById(R.id.container);
 
         startBounds = new Rect();
@@ -160,7 +165,7 @@ public class ActivityMain extends AppCompatActivity {
         // TODO: how to set position without extra animation
 
         layoutParams.width = finalBounds.right;
-        layoutParams.height = finalBounds.bottom - 50;
+        layoutParams.height = finalBounds.bottom;// - 50;
 
         imgView.setLayoutParams(layoutParams);
 
@@ -169,12 +174,14 @@ public class ActivityMain extends AppCompatActivity {
                 .play(ObjectAnimator.ofFloat(imgView, View.X, startBounds.left, finalBounds.left))
                 .with(ObjectAnimator.ofFloat(imgView, View.Y, startBounds.top, finalBounds.top))
         ;
-        set.setDuration(400);
+        set.setDuration(300);
         set.setInterpolator(new AccelerateDecelerateInterpolator());
         set.start();
     }
 
     private void closeFullImage(){
+
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         ViewGroup root = findViewById(R.id.container);
 
@@ -194,7 +201,7 @@ public class ActivityMain extends AppCompatActivity {
                 .ofFloat(imgView, View.X, finalBounds.left, startBounds.left))
                 .with(ObjectAnimator.ofFloat(imgView, View.Y,finalBounds.top, startBounds.top))
         ;
-        set.setDuration(400);
+        set.setDuration(300);
         set.setInterpolator(new AccelerateDecelerateInterpolator());
         set.addListener(new AnimatorListenerAdapter() {
             @Override
