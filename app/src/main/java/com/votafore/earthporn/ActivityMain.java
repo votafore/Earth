@@ -1,28 +1,25 @@
 package com.votafore.earthporn;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.graphics.Point;
-import android.graphics.Rect;
+import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.transition.TransitionInflater;
-import android.transition.TransitionManager;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 
+import com.votafore.earthporn.activities.ActivityFullImage;
+import com.votafore.earthporn.activities.ActivityGallery;
 import com.votafore.earthporn.utils.RVAdapter;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author votarore
@@ -71,160 +68,40 @@ public class ActivityMain extends AppCompatActivity {
             @Override
             public void onClick(View item, int position) {
 
-                imgView.setImageBitmap(app.getAdapter().getImageItem(position).image);
-                openFullImage(item);
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ActivityMain.this, item, "Open_img");
 
-                btn_getNew.setVisibility(View.INVISIBLE);
-                btn_getTop.setVisibility(View.INVISIBLE);
+                Intent openFullImg = new Intent(ActivityMain.this, ActivityFullImage.class);
+                openFullImg.putExtra("imgIndex", position);
 
-                imageIndex = position;
-            }
-        });
-
-        // https://stackoverflow.com/questions/1016896/get-screen-dimensions-in-pixels
-        Point size = new Point();
-        getWindowManager().getDefaultDisplay().getRealSize(size);
-
-        finalBounds = new Rect(0,0, size.x, size.y);
-
-        if (savedInstanceState == null) {
-            return;
-        }
-
-        if(savedInstanceState.getBoolean("isFullScreen")){
-            imageIndex = savedInstanceState.getInt("imageIndex");
-            imgView.setImageBitmap(app.getAdapter().getImageItem(imageIndex).image);
-            imgView.setVisibility(View.VISIBLE);
-
-            btn_getNew.setVisibility(View.INVISIBLE);
-            btn_getTop.setVisibility(View.INVISIBLE);
-
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
-
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        if (imgView.getVisibility() == View.VISIBLE){
-
-            if (startBounds != null) {
-                closeFullImage();
-            } else {
-                imgView.setVisibility(View.GONE);
-            }
-
-            btn_getNew.setVisibility(View.VISIBLE);
-            btn_getTop.setVisibility(View.VISIBLE);
-
-            return;
-        }
-
-        super.onBackPressed();
-    }
-
-    private int imageIndex = -1;
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putInt("imageIndex", imageIndex);
-        outState.putBoolean("isFullScreen", imgView.getVisibility() == View.VISIBLE);
-        super.onSaveInstanceState(outState);
-    }
-
-
-
-    /**************** animation ******************/
-
-    private Rect finalBounds;
-    private Rect startBounds;
-
-    private void openFullImage(View thumbnail){
-
-        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    |View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    |View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    |View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    |View.SYSTEM_UI_FLAG_FULLSCREEN
-                    |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
-        ViewGroup root = findViewById(R.id.container);
-
-        startBounds = new Rect();
-        thumbnail.getGlobalVisibleRect(startBounds);
-        startBounds.offset(0, -50);
-
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) imgView.getLayoutParams();
-
-        layoutParams.width = startBounds.right - startBounds.left;
-        layoutParams.height= startBounds.bottom - startBounds.top;
-
-        imgView.setX(startBounds.left);
-        imgView.setY(startBounds.top);
-
-        imgView.setVisibility(View.VISIBLE);
-
-        imgView.setLayoutParams(layoutParams);
-
-        TransitionManager.beginDelayedTransition(root, TransitionInflater.from(getApplicationContext()).inflateTransition(R.transition.open_image));
-
-        // TODO: how to set position without extra animation
-
-        layoutParams.width = finalBounds.right;
-        layoutParams.height = finalBounds.bottom;// - 50;
-
-        imgView.setLayoutParams(layoutParams);
-
-        AnimatorSet set = new AnimatorSet();
-        set
-                .play(ObjectAnimator.ofFloat(imgView, View.X, startBounds.left, finalBounds.left))
-                .with(ObjectAnimator.ofFloat(imgView, View.Y, startBounds.top, finalBounds.top))
-        ;
-        set.setDuration(300);
-        set.setInterpolator(new AccelerateDecelerateInterpolator());
-        set.start();
-    }
-
-    private void closeFullImage(){
-
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-
-        ViewGroup root = findViewById(R.id.container);
-
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) imgView.getLayoutParams();
-
-        layoutParams.width = startBounds.right - startBounds.left;
-        layoutParams.height= startBounds.bottom - startBounds.top;
-
-        TransitionManager.beginDelayedTransition(root, TransitionInflater.from(getApplicationContext()).inflateTransition(R.transition.open_image));
-
-        imgView.setLayoutParams(layoutParams);
-
-        // TODO: find out how change position without extra animation object
-
-        AnimatorSet set = new AnimatorSet();
-        set.play(ObjectAnimator
-                .ofFloat(imgView, View.X, finalBounds.left, startBounds.left))
-                .with(ObjectAnimator.ofFloat(imgView, View.Y,finalBounds.top, startBounds.top))
-        ;
-        set.setDuration(300);
-        set.setInterpolator(new AccelerateDecelerateInterpolator());
-        set.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                imgView.setVisibility(View.GONE);
+                startActivity(openFullImg, options.toBundle());
             }
 
             @Override
-            public void onAnimationCancel(Animator animation) {
-                imgView.setVisibility(View.GONE);
+            public void onLongClick(View item, int position) {
+
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ActivityMain.this, item, "Open_img");
+
+                Intent openFullImg = new Intent(ActivityMain.this, ActivityGallery.class);
+                openFullImg.putExtra("imgIndex", position);
+
+                startActivity(openFullImg, options.toBundle());
             }
         });
-        set.start();
 
-        imageIndex = -1;
+
+        ActivityCompat.setExitSharedElementCallback(this, new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+
+                if (ActivityGallery.selectedIndex < 0) {
+                    // When transitioning out, use the view already specified in makeSceneTransition
+                    return;
+                }
+
+                // When transitioning back in, use the thumbnail at index the user had swiped to in the pager activity
+                sharedElements.put(names.get(0), ((RVAdapter)imageList.getAdapter()).getViewAtIndex(ActivityGallery.selectedIndex));
+                ActivityGallery.selectedIndex = -1;
+            }
+        });
     }
 }

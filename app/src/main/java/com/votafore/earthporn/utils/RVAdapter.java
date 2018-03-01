@@ -14,7 +14,9 @@ import com.votafore.earthporn.models.ImageItem;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author votarore
@@ -27,12 +29,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
     private static final int TYPE_HALF = 1;
 
     private List<ImageItem> images = new ArrayList<>();
+    private Map<Integer, WeakReference<ImageView>> map = new HashMap();
     private Context context;
 
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onClick(View item, int position);
+        void onLongClick(View item, int position);
     }
 
     public RVAdapter(Context context){
@@ -42,6 +46,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
     public void setImages(List<ImageItem> list){
         images = list;
         notifyDataSetChanged();
+    }
+
+    public View getViewAtIndex(int index){
+        if(map.get(index) == null){
+            return null;
+        }
+        return map.get(index).get();
     }
 
     public void setListener(OnItemClickListener listener) {
@@ -90,6 +101,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.ref = new WeakReference<>(holder.img);
         images.get(position).setImageToImageView(context, holder.ref);
+        map.put(position, holder.ref);
     }
 
     @Override
@@ -107,6 +119,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
         super.onViewRecycled(holder);
         holder.ref.clear();
         holder.img.setImageBitmap(null);
+
+        for (int key: map.keySet()) {
+            if (map.get(key) == holder.ref) {
+                map.remove(key);
+                break;
+            }
+        }
     }
 
     @Override
@@ -114,7 +133,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
         return images.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
 
         ImageView img;
         WeakReference<ImageView> ref;
@@ -125,6 +144,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
             img = itemView.findViewById(R.id.img);
 
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         @Override
@@ -135,6 +155,18 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
             }
 
             listener.onClick(this.itemView, getAdapterPosition());
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+
+            if (listener == null){
+                return false;
+            }
+
+            listener.onLongClick(this.itemView, getAdapterPosition());
+
+            return true;
         }
     }
 }
