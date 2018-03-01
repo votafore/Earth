@@ -45,12 +45,12 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Transition fade = new Fade()
-                .setDuration(1000)
-                .setInterpolator(new AccelerateInterpolator());
-
-        getWindow().setExitTransition(fade);
-        getWindow().setEnterTransition(fade);
+//        Transition fade = new Fade()
+//                .setDuration(1000)
+//                .setInterpolator(new AccelerateInterpolator());
+//
+//        getWindow().setExitTransition(fade);
+//        getWindow().setEnterTransition(fade);
 
         final App app = (App) getApplication();
 

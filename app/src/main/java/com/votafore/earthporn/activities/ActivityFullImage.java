@@ -12,6 +12,7 @@ import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 
+import com.github.chrisbanes.photoview.PhotoView;
 import com.votafore.earthporn.App;
 import com.votafore.earthporn.R;
 
@@ -25,11 +26,11 @@ public class ActivityFullImage extends AppCompatActivity {
 
         ActivityCompat.postponeEnterTransition(this);
 
-        Transition fade = new Fade(Fade.IN)
-                .setDuration(1000)
-                .setInterpolator(new AccelerateInterpolator());
-
-        getWindow().setEnterTransition(fade);
+//        Transition fade = new Fade(Fade.IN)
+//                .setDuration(1000)
+//                .setInterpolator(new AccelerateInterpolator());
+//
+//        getWindow().setEnterTransition(fade);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_image);
@@ -44,7 +45,7 @@ public class ActivityFullImage extends AppCompatActivity {
 
         Bitmap img_bmp = ((App)getApplication()).getAdapter().getImageItem(getIntent().getIntExtra("imgIndex", -1)).image;
 
-        final ImageView img = findViewById(R.id.img_full);
+        final PhotoView img = findViewById(R.id.img_full);
         img.setImageBitmap(img_bmp);
 //        img.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener(){
 //
