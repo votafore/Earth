@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.votafore.earthporn.helpers.ServiceEarthPorn;
 import com.votafore.earthporn.models.Child;
+import com.votafore.earthporn.utils.PAdapter;
 import com.votafore.earthporn.utils.RVAdapter;
 import com.votafore.earthporn.models.ListOfImages;
 import com.votafore.earthporn.models.ImageItem;
@@ -29,6 +30,7 @@ public class App extends Application {
     private Handler handler;
     private RVAdapter adapter;
     private Callback<ListOfImages> listener;
+    private PAdapter pagerAdapter;
 
     @Override
     public void onCreate() {
@@ -37,6 +39,7 @@ public class App extends Application {
         earthService = new ServiceEarthPorn();
         handler      = new Handler();
         adapter      = new RVAdapter(getApplicationContext());
+        pagerAdapter = new PAdapter();
         listener     = new Callback<ListOfImages>() {
             @Override
             public void onResponse(Call<ListOfImages> call, Response<ListOfImages> response) {
@@ -54,6 +57,7 @@ public class App extends Application {
                     @Override
                     public void run() {
                         adapter.setImages(list);
+                        pagerAdapter.setImages(list);
                     }
                 });
             }
@@ -80,5 +84,9 @@ public class App extends Application {
 
     public RVAdapter getAdapter(){
         return adapter;
+    }
+
+    public PAdapter getPagerAdapter(){
+        return pagerAdapter;
     }
 }
