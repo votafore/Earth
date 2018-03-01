@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,7 +27,11 @@ import android.widget.ImageView;
 
 
 import com.votafore.earthporn.activities.ActivityFullImage;
+import com.votafore.earthporn.activities.ActivityGallery;
 import com.votafore.earthporn.utils.RVAdapter;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author votarore
@@ -46,7 +52,7 @@ public class ActivityMain extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 //        Transition fade = new Fade()
-//                .setDuration(1000)
+//                .setDuration(400)
 //                .setInterpolator(new AccelerateInterpolator());
 //
 //        getWindow().setExitTransition(fade);
@@ -81,14 +87,13 @@ public class ActivityMain extends AppCompatActivity {
             @Override
             public void onClick(View item, int position) {
 
-
-
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ActivityMain.this, item, getResources().getString(R.string.transition_name));
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ActivityMain.this, item, "Open_img");
 
                 Intent openFullImg = new Intent(ActivityMain.this, ActivityFullImage.class);
                 openFullImg.putExtra("imgIndex", position);
 
                 startActivity(openFullImg, options.toBundle());
+                //startActivity(openFullImg);
 
                 //imgView.setImageBitmap(app.getAdapter().getImageItem(position).image);
                 //openFullImage(item);
@@ -97,6 +102,33 @@ public class ActivityMain extends AppCompatActivity {
 //                btn_getTop.setVisibility(View.INVISIBLE);
 
 //                imageIndex = position;
+            }
+
+            @Override
+            public void onLongClick(View item, int position) {
+
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ActivityMain.this, item, "Open_img");
+
+                Intent openFullImg = new Intent(ActivityMain.this, ActivityGallery.class);
+                openFullImg.putExtra("imgIndex", position);
+
+                startActivity(openFullImg, options.toBundle());
+            }
+        });
+
+
+        ActivityCompat.setExitSharedElementCallback(this, new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+
+                if (ActivityGallery.selectedIndex < 0) {
+                    // When transitioning out, use the view already specified in makeSceneTransition
+                    return;
+                }
+
+                // When transitioning back in, use the thumbnail at index the user had swiped to in the pager activity
+                sharedElements.put(names.get(0), ((RVAdapter)imageList.getAdapter()).getViewAtIndex(ActivityGallery.selectedIndex));
+                ActivityGallery.selectedIndex = -1;
             }
         });
 

@@ -26,14 +26,11 @@ public class ActivityFullImage extends AppCompatActivity {
 
         ActivityCompat.postponeEnterTransition(this);
 
-//        Transition fade = new Fade(Fade.IN)
-//                .setDuration(1000)
+//        Transition fade = new Fade()
+//                .setDuration(400)
 //                .setInterpolator(new AccelerateInterpolator());
 //
 //        getWindow().setEnterTransition(fade);
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_full_image);
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 |View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -42,28 +39,31 @@ public class ActivityFullImage extends AppCompatActivity {
                 |View.SYSTEM_UI_FLAG_FULLSCREEN
                 |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_full_image);
+
+        final ImageView img = findViewById(R.id.img_full);
+
+        ActivityCompat.setEnterSharedElementCallback(this, new SharedElementCallback() {
+
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                sharedElements.put(getResources().getString(R.string.transition_name), img);
+            }
+        });
 
         Bitmap img_bmp = ((App)getApplication()).getAdapter().getImageItem(getIntent().getIntExtra("imgIndex", -1)).image;
 
-        final PhotoView img = findViewById(R.id.img_full);
         img.setImageBitmap(img_bmp);
-//        img.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener(){
-//
-//            @Override
-//            public void onGlobalLayout() {
-//                img.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//                ActivityCompat.startPostponedEnterTransition(ActivityFullImage.this);
-//            }
-//        });
+        img.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener(){
 
-        ActivityCompat.startPostponedEnterTransition(this);
+            @Override
+            public void onGlobalLayout() {
+                img.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                ActivityCompat.startPostponedEnterTransition(ActivityFullImage.this);
+            }
+        });
 
-//        ActivityCompat.setEnterSharedElementCallback(this, new SharedElementCallback() {
-//
-//            @Override
-//            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-//                sharedElements.put(getResources().getString(R.string.transition_name), img);
-//            }
-//        });
+//        ActivityCompat.startPostponedEnterTransition(this);
     }
 }

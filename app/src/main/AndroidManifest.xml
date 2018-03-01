@@ -21,6 +21,8 @@
         </activity>
         <activity android:name=".activities.ActivityFullImage">
         </activity>
+        <activity android:name=".activities.ActivityGallery">
+        </activity>
     </application>
 
 </manifest>
