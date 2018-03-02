@@ -103,5 +103,7 @@ public class ActivityMain extends AppCompatActivity {
                 ActivityGallery.selectedIndex = -1;
             }
         });
+
+        app.sendRequestForTopImages();
     }
 }
