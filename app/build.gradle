@@ -23,6 +23,9 @@ android {
     buildToolsVersion '27.0.3'
     productFlavors {
     }
+
+    // переопределение (добавление) каталога ресурсов
+    sourceSets.main.res.srcDir 'src/main/res-test'
 }
 
 dependencies {
