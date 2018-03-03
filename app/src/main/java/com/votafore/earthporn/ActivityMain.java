@@ -7,9 +7,12 @@ import android.support.v4.app.SharedElementCallback;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -30,9 +33,10 @@ public class ActivityMain extends AppCompatActivity {
 
     private RecyclerView imageList;
 
-    ImageView imgView;
     Button btn_getTop;
     Button btn_getNew;
+
+    private int spanCount = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +44,6 @@ public class ActivityMain extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final App app = (App) getApplication();
-
-        imageList = findViewById(R.id.image_list);
-        imageList.setItemAnimator(new DefaultItemAnimator());
-        imageList.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        imageList.setAdapter(app.getAdapter());
 
         btn_getNew = findViewById(R.id.get_new_images);
         btn_getNew.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +61,9 @@ public class ActivityMain extends AppCompatActivity {
             }
         });
 
-        imgView = findViewById(R.id.full_image);
+        imageList = findViewById(R.id.image_list);
+        imageList.setItemAnimator(new DefaultItemAnimator());
+        imageList.setAdapter(app.getAdapter());
 
         app.getAdapter().setListener(new RVAdapter.OnItemClickListener() {
             @Override
