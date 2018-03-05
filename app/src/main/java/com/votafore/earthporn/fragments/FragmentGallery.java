@@ -22,10 +22,6 @@ public class FragmentGallery extends Fragment {
 
     private App app;
 
-    public FragmentGallery() {
-        // Required empty public constructor
-    }
-
     public static FragmentGallery newInstance() {
         FragmentGallery fragment = new FragmentGallery();
         return fragment;

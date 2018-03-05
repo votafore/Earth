@@ -22,10 +22,6 @@ public class FragmentFullImage extends Fragment {
     private ActivityMain activityMain;
     private App app;
 
-    public FragmentFullImage() {
-        // Required empty public constructor
-    }
-
     public static FragmentFullImage newInstance() {
         return new FragmentFullImage();
     }
