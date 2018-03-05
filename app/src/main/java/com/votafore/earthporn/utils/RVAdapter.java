@@ -135,8 +135,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
 
-        ImageView img;
-        WeakReference<ImageView> ref;
+        public ImageView img;
+        public WeakReference<ImageView> ref;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -154,7 +154,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
                 return;
             }
 
-            listener.onClick(this.itemView, getAdapterPosition());
+            listener.onClick(itemView, getAdapterPosition());
         }
 
         @Override
@@ -164,7 +164,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
                 return false;
             }
 
-            listener.onLongClick(this.itemView, getAdapterPosition());
+            listener.onLongClick(itemView, getAdapterPosition());
 
             return true;
         }
