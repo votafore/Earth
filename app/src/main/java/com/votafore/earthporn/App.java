@@ -32,6 +32,8 @@ public class App extends Application {
     private Callback<ListOfImages> listener;
     private PAdapter pagerAdapter;
 
+    public static int selectedIndex = -1;
+
     @Override
     public void onCreate() {
         super.onCreate();
