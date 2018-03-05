@@ -24,19 +24,8 @@ public class FragmentList extends Fragment {
 
     private App app;
 
-    public FragmentList() {
-        // Required empty public constructor
-    }
-
     public static FragmentList newInstance() {
         return new FragmentList();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        app.sendRequestForTopImages();
     }
 
     @Override
@@ -46,9 +35,13 @@ public class FragmentList extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        app.sendRequestForTopImages();
+    }
 
-        postponeEnterTransition();
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View v = View.inflate(container.getContext(), R.layout.fragment_list, null);
 
@@ -87,28 +80,22 @@ public class FragmentList extends Fragment {
             }
         });
 
-        startPostponedEnterTransition();
-
         return v;
     }
 
     public void goToFullImage(){
 
-        FragmentFullImage f = FragmentFullImage.newInstance();
-
         getFragmentManager().beginTransaction()
-                .replace(R.id.pages, f, "Full")
-                .addToBackStack(f.toString())
+                .replace(R.id.pages, FragmentFullImage.newInstance())
+                .addToBackStack(null)
                 .commit();
     }
 
     public void goToGallery(){
 
-        FragmentGallery f = FragmentGallery.newInstance();
-
         getFragmentManager().beginTransaction()
-                .replace(R.id.pages, f, "Gallery")
-                .addToBackStack(f.toString())
+                .replace(R.id.pages, FragmentGallery.newInstance())
+                .addToBackStack(null)
                 .commit();
     }
 }
