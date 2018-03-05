@@ -25,8 +25,6 @@ public class PAdapter extends PagerAdapter {
 
     private List<ImageItem> images = new ArrayList<>();
 
-    private Map<Integer, WeakReference<ImageView>> map = new HashMap();
-
     public void setImages(List<ImageItem> newList){
         images = newList;
         notifyDataSetChanged();
@@ -56,18 +54,11 @@ public class PAdapter extends PagerAdapter {
 
         container.addView(v);
 
-        map.put(position, new WeakReference<>(img));
-
         return v;
     }
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
-        map.remove(position);
-    }
-
-    public View getViewByID(int index){
-        return map.get(index).get();
     }
 }

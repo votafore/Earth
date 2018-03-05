@@ -29,7 +29,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
     private static final int TYPE_HALF = 1;
 
     private List<ImageItem> images = new ArrayList<>();
-    private Map<Integer, WeakReference<ImageView>> map = new HashMap();
     private Context context;
 
     private OnItemClickListener listener;
@@ -46,13 +45,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
     public void setImages(List<ImageItem> list){
         images = list;
         notifyDataSetChanged();
-    }
-
-    public View getViewAtIndex(int index){
-        if(map.get(index) == null){
-            return null;
-        }
-        return map.get(index).get();
     }
 
     public void setListener(OnItemClickListener listener) {
@@ -101,7 +93,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.ref = new WeakReference<>(holder.img);
         images.get(position).setImageToImageView(context, holder.ref);
-        map.put(position, holder.ref);
     }
 
     @Override
@@ -119,13 +110,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
         super.onViewRecycled(holder);
         holder.ref.clear();
         holder.img.setImageBitmap(null);
-
-        for (int key: map.keySet()) {
-            if (map.get(key) == holder.ref) {
-                map.remove(key);
-                break;
-            }
-        }
     }
 
     @Override
