@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import com.votafore.earthporn.ActivityMain;
 import com.votafore.earthporn.App;
 import com.votafore.earthporn.R;
+import com.votafore.earthporn.models.ImageItem;
 
 /**
  * @author Vorafore
@@ -51,10 +52,23 @@ public class FragmentFullImage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+<<<<<<< HEAD
         View v = inflater.inflate(R.layout.fragment_full_image, container, false);
 
         ImageView img = v.findViewById(R.id.img_full);
         img.setImageBitmap(app.getAdapter().getImageItem(App.selectedIndex).image);
+=======
+        setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.open_image));
+
+        View v = View.inflate(container.getContext(), R.layout.fragment_full_image, null);
+
+        final ImageView img = v.findViewById(R.id.img_full);
+
+        ImageItem item = app.getAdapter().getImageItem(App.selectedIndex);
+
+        img.setTransitionName(item.item.getId());
+        img.setImageBitmap(item.image);
+>>>>>>> task4_fragments
 
         return v;
     }

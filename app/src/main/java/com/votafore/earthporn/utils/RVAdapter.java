@@ -3,6 +3,7 @@ package com.votafore.earthporn.utils;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,13 +23,14 @@ import java.util.List;
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
 
     private List<ImageItem> images = new ArrayList<>();
+
     private Context context;
 
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
-        void onClick(View item, int position);
-        void onLongClick(View item, int position);
+        void onClick(int position);
+        void onLongClick(int position);
     }
 
     public RVAdapter(Context context){
@@ -56,13 +58,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.img.setTransitionName(images.get(position).item.getId());
         holder.ref = new WeakReference<>(holder.img);
         images.get(position).setImageToImageView(context, holder.ref);
     }
 
     @Override
     public void onViewRecycled(ViewHolder holder) {
-        super.onViewRecycled(holder);
         holder.ref.clear();
         holder.img.setImageBitmap(null);
     }
@@ -93,7 +95,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
                 return;
             }
 
-            listener.onClick(itemView, getAdapterPosition());
+            listener.onClick(getAdapterPosition());
         }
 
         @Override
@@ -103,7 +105,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
                 return false;
             }
 
-            listener.onLongClick(itemView, getAdapterPosition());
+            listener.onLongClick(getAdapterPosition());
 
             return true;
         }
