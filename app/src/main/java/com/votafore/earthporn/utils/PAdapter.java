@@ -62,6 +62,8 @@ public class PAdapter extends PagerAdapter {
 
         container.addView(v);
 
+        map.put(position, new WeakReference<>(img));
+
         return v;
     }
 
