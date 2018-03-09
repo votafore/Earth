@@ -10,7 +10,6 @@ import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Fade;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,20 +61,10 @@ public class FragmentList extends Fragment {
         View v = View.inflate(container.getContext(), R.layout.fragment_list, null);
 
         Button btn_getNew = v.findViewById(R.id.get_new_images);
-        btn_getNew.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                app.sendRequestForNewImages();
-            }
-        });
+        btn_getNew.setOnClickListener(v12 -> app.sendRequestForNewImages());
 
         Button btn_getTop = v.findViewById(R.id.get_top_images);
-        btn_getTop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                app.sendRequestForTopImages();
-            }
-        });
+        btn_getTop.setOnClickListener(v1 -> app.sendRequestForTopImages());
 
         imageList = v.findViewById(R.id.image_list);
         imageList.setItemAnimator(new DefaultItemAnimator());
@@ -103,6 +92,15 @@ public class FragmentList extends Fragment {
             public void onLongClick(int position) {
                 App.selectedIndex = position;
 
+                FragmentGallery pageGallery = FragmentGallery.newInstance();
+                View item = ((RVAdapter.ViewHolder)imageList.findViewHolderForAdapterPosition(position)).img;
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.pages, pageGallery)
+                        .setReorderingAllowed(true)
+                        .addSharedElement(item, ViewCompat.getTransitionName(item))
+                        .addToBackStack(pageGallery.toString())
+                        .commit();
             }
         });
 
@@ -118,17 +116,8 @@ public class FragmentList extends Fragment {
                 }
 
                 sharedElements.put(names.get(0), selectedViewHolder.img);
-                //sharedElements.put(names.get(0), app.getAdapter().getViewAtIndex(App.selectedIndex));
             }
         });
-
-//        imageList.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                imageList.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//                startPostponedEnterTransition();
-//            }
-//        });
 
         imageList.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
@@ -162,32 +151,4 @@ public class FragmentList extends Fragment {
             }
         });
     }
-
-    //    public void goToFullImage(){
-//
-//        FragmentFullImage f = FragmentFullImage.newInstance();
-//
-//        View item = ((RVAdapter)imageList.getAdapter()).getViewAtIndex(App.selectedIndex);
-//
-//        getFragmentManager().beginTransaction()
-//                .replace(R.id.pages, f)
-//                .setReorderingAllowed(true)
-//                .addSharedElement(item, ViewCompat.getTransitionName(item))
-//                .addToBackStack(f.toString())
-//                .commit();
-//    }
-
-//    public void goToGallery(){
-//
-//        FragmentGallery f = FragmentGallery.newInstance();
-//
-//        View item = ((RVAdapter)imageList.getAdapter()).getViewAtIndex(App.selectedIndex);
-//
-//        getFragmentManager().beginTransaction()
-//                .replace(R.id.pages, f)
-//                .setReorderingAllowed(true)
-//                .addSharedElement(item, ViewCompat.getTransitionName(item))
-//                .addToBackStack(f.toString())
-//                .commit();
-//    }
 }

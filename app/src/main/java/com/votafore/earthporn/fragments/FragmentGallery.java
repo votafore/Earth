@@ -33,14 +33,8 @@ public class FragmentGallery extends Fragment {
         return fragment;
     }
 
-<<<<<<< HEAD
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-=======
     public FragmentGallery() {
         // Required empty public constructor
->>>>>>> task4_fragments
     }
 
     @Override
@@ -61,8 +55,6 @@ public class FragmentGallery extends Fragment {
         pager.setAdapter(app.getPagerAdapter());
 
         pager.setCurrentItem(App.selectedIndex);
-<<<<<<< HEAD
-=======
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -96,7 +88,6 @@ public class FragmentGallery extends Fragment {
             }
         });
 
->>>>>>> task4_fragments
         return v;
     }
 
