@@ -37,9 +37,6 @@ public class FragmentList extends Fragment {
         return new FragmentList();
     }
 
-
-
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -54,6 +51,8 @@ public class FragmentList extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        postponeEnterTransition();
 
         View v = View.inflate(container.getContext(), R.layout.fragment_list, null);
 
