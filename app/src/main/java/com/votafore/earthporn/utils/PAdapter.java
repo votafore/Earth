@@ -2,6 +2,9 @@ package com.votafore.earthporn.utils;
 
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+
+import android.util.ArrayMap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +15,6 @@ import com.votafore.earthporn.models.ImageItem;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +27,7 @@ public class PAdapter extends PagerAdapter {
 
     private List<ImageItem> images = new ArrayList<>();
 
-    private Map<Integer, WeakReference<ImageView>> map = new HashMap();
+    private Map<Integer, WeakReference<ImageView>> map = new ArrayMap();
 
     public void setImages(List<ImageItem> newList){
         images = newList;
@@ -50,9 +52,13 @@ public class PAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
 
+        Log.d("NEW_DATA", String.format("PAdapter: instantiateItem... position:%d", position));
+
         View v = LayoutInflater.from(container.getContext()).inflate(R.layout.pager_item, container, false);
+
         ImageView img = v.findViewById(R.id.img_full);
-        images.get(position).setImageToImageView(container.getContext(), new WeakReference<ImageView>(img));
+        img.setTransitionName(images.get(position).item.getId());
+        images.get(position).setImageToImageView(container.getContext(), new WeakReference<>(img));
 
         container.addView(v);
 
@@ -67,7 +73,10 @@ public class PAdapter extends PagerAdapter {
         map.remove(position);
     }
 
-    public View getViewByID(int index){
+    public View getViewByIndex(int index){
+        if (map.get(index) == null){
+            return null;
+        }
         return map.get(index).get();
     }
 }

@@ -4,7 +4,10 @@ package com.votafore.earthporn.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
+import android.transition.TransitionInflater;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,9 @@ import android.widget.TextView;
 import com.votafore.earthporn.ActivityMain;
 import com.votafore.earthporn.App;
 import com.votafore.earthporn.R;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Votafore
@@ -23,25 +29,13 @@ public class FragmentGallery extends Fragment {
 
     private App app;
 
-    public FragmentGallery() {
-        // Required empty public constructor
-    }
-
     public static FragmentGallery newInstance() {
         FragmentGallery fragment = new FragmentGallery();
-//        Bundle args = new Bundle();
-//        args.putInt(paramIndex, index);
-//        fragment.setArguments(args);
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
+    public FragmentGallery() {
+        // Required empty public constructor
     }
 
     @Override
@@ -53,30 +47,47 @@ public class FragmentGallery extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        postponeEnterTransition();
+        setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.open_image));
+
         View v = inflater.inflate(R.layout.fragment_gallery, container, false);
-        //View v = View.inflate(container.getContext(), R.layout.fragment_gallery, null);
 
         ViewPager pager = v.findViewById(R.id.gallery_pager);
         pager.setAdapter(app.getPagerAdapter());
 
-        //int selectedIndex = getIntent().getIntExtra("imgIndex", 0);
         pager.setCurrentItem(App.selectedIndex);
-//        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                App.selectedIndex = position;
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//
-//            }
-//        });
+        pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                App.selectedIndex = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        setEnterSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                Log.d("NEW_DATA", "gallery: onMapSharedElements");
+                sharedElements.put(names.get(0), app.getPagerAdapter().getViewByIndex(App.selectedIndex));
+            }
+        });
+
+        pager.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                pager.removeOnLayoutChangeListener(this);
+                startPostponedEnterTransition();
+            }
+        });
 
         return v;
     }

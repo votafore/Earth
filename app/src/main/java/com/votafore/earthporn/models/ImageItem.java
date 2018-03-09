@@ -26,7 +26,7 @@ public class ImageItem {
     public Data_ item;
 
     public void setImageToImageView(Context context, final WeakReference<ImageView> reference){
-        Log.d("NEW_DATA", "setImageToImageView");
+        //Log.d("NEW_DATA", "setImageToImageView");
 
         reference.get().setImageBitmap(image);
 
@@ -56,7 +56,7 @@ public class ImageItem {
             width = (int) (height * ratio);
         }
 
-        Log.d("NEW_DATA", "loadImage");
+        //Log.d("NEW_DATA", "loadImage");
 
         Glide.with(context)
                 .asBitmap()

@@ -3,19 +3,19 @@ package com.votafore.earthporn.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Fade;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
-import android.transition.TransitionSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 
 import com.votafore.earthporn.ActivityMain;
@@ -26,6 +26,7 @@ import com.votafore.earthporn.utils.RVAdapter;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * @author Vorafore
  * created 03.03.2018
@@ -35,55 +36,13 @@ public class FragmentList extends Fragment {
     private RecyclerView imageList;
 
     private App app;
-    private RVAdapter.OnItemClickListener listener;
-
-    //private View currentView;
-
-    public FragmentList() {
-        // Required empty public constructor
-    }
-
-    public void setListener(RVAdapter.OnItemClickListener newListener){
-        listener = newListener;
-    }
 
     public static FragmentList newInstance() {
         return new FragmentList();
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // TODO: dodelat'
-        // request for images when fragment is created at first time
-        app.sendRequestForTopImages();
-
-//        setExitTransition(new Fade());
-
-
-
-
-//        setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.open_image));
-//        setSharedElementReturnTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.open_image));
-
-//        setExitSharedElementCallback(new SharedElementCallback() {
-//            @Override
-//            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-//
-//                if (App.selectedIndex < 0) {
-//                    // When transitioning out, use the view already specified in makeSceneTransition
-//                    return;
-//                }
-//
-//                // When transitioning back in, use the thumbnail at index the user had swiped to in the pager activity
-//                //sharedElements.put(names.get(0), app.getAdapter().getViewAtIndex(app.selectedIndex));
-//                sharedElements.put(names.get(0), app.getAdapter().getViewAtIndex(App.selectedIndex));
-//                //App.selectedIndex = -1;
-//            }
-//        });
-
-
+    public FragmentList() {
+        // Required empty public constructor
     }
 
     @Override
@@ -93,7 +52,16 @@ public class FragmentList extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        app.sendRequestForTopImages();
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        setExitTransition(new Fade());
 
         postponeEnterTransition();
 
@@ -120,75 +88,122 @@ public class FragmentList extends Fragment {
         imageList.setAdapter(app.getAdapter());
 
         app.getAdapter().setListener(new RVAdapter.OnItemClickListener() {
+
             @Override
-            public void onClick(View item, int position) {
-
+            public void onClick(int position) {
                 App.selectedIndex = position;
-                //currentView = item;
-                //currentView.setTransitionName(String.format("Open_img_%d", position));
-                //currentView.setTransitionName("Open_img");
 
-                goToFullImage();
+                FragmentFullImage pageFullImage = FragmentFullImage.newInstance();
+
+                View item = ((RVAdapter.ViewHolder)imageList.findViewHolderForAdapterPosition(position)).img;
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.pages, pageFullImage)
+                        .setReorderingAllowed(true)
+                        .addSharedElement(item, ViewCompat.getTransitionName(item))
+                        .addToBackStack(pageFullImage.toString())
+                        .commit();
             }
 
             @Override
-            public void onLongClick(View item, int position) {
+            public void onLongClick(int position) {
                 App.selectedIndex = position;
-                //currentView = item;
-                goToGallery();
+
+                FragmentGallery pageGallery = FragmentGallery.newInstance();
+                View item = ((RVAdapter.ViewHolder)imageList.findViewHolderForAdapterPosition(position)).img;
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.pages, pageGallery)
+                        .setReorderingAllowed(true)
+                        .addSharedElement(item, ViewCompat.getTransitionName(item))
+                        .addToBackStack(pageGallery.toString())
+                        .commit();
+
             }
         });
 
-        startPostponedEnterTransition();
+        setExitSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                Log.d("NEW_DATA", "list: onMapSharedElements");
+
+                RVAdapter.ViewHolder selectedViewHolder = (RVAdapter.ViewHolder) imageList.findViewHolderForAdapterPosition(App.selectedIndex);
+
+                if (selectedViewHolder == null || selectedViewHolder.itemView == null) {
+                    return;
+                }
+
+                sharedElements.put(names.get(0), selectedViewHolder.img);
+                //sharedElements.put(names.get(0), app.getAdapter().getViewAtIndex(App.selectedIndex));
+            }
+        });
+
+//        imageList.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            public void onGlobalLayout() {
+//                imageList.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//                startPostponedEnterTransition();
+//            }
+//        });
+
+        imageList.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                imageList.removeOnLayoutChangeListener(this);
+                startPostponedEnterTransition();
+            }
+        });
 
         return v;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
+        // scroll to position
+        imageList.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
 
-    public void goToFullImage(){
+                imageList.removeOnLayoutChangeListener(this);
 
-//        setExitSharedElementCallback(new SharedElementCallback() {
-//
-//            @Override
-//            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-////                sharedElements.put(names.get(0), view);
-//
-////                RecyclerView.ViewHolder selectedViewHolder = imageList.findViewHolderForAdapterPosition(App.selectedIndex);
-////
-////                if (selectedViewHolder == null || selectedViewHolder.itemView == null) {
-////                    return;
-////                }
-////
-////                //View v = imageList.getChildAt(App.selectedIndex);
-////                View v = selectedViewHolder.itemView.findViewById(R.id.img_full);
-////
-////                // Map the first shared element name to the child ImageView.
-////                sharedElements.put(names.get(0), v);
-//
-////                ((Transition)getExitTransition()).excludeTarget(v, true);
-//            }
-//        });
+                final RecyclerView.LayoutManager layoutManager = imageList.getLayoutManager();
+                View viewAtPosition = layoutManager.findViewByPosition(App.selectedIndex);
 
-        FragmentFullImage f = FragmentFullImage.newInstance();
-
-        getFragmentManager().beginTransaction()
-                .replace(R.id.pages, f, "Full")
-//                .setReorderingAllowed(true)
-//                .addSharedElement(currentView, ViewCompat.getTransitionName(currentView))
-                .addToBackStack(f.toString())
-                .commit();
+                if (viewAtPosition == null || layoutManager.isViewPartiallyVisible(viewAtPosition, false, true)) {
+                    Log.d("NEW_DATA", "list: scrollToPosition");
+                    imageList.post(() -> layoutManager.scrollToPosition(App.selectedIndex));
+                }
+            }
+        });
     }
 
-    public void goToGallery(){
-
-        FragmentGallery f = FragmentGallery.newInstance();
-
-        getFragmentManager().beginTransaction()
-                .replace(R.id.pages, f, "Gallery")
+    //    public void goToFullImage(){
+//
+//        FragmentFullImage f = FragmentFullImage.newInstance();
+//
+//        View item = ((RVAdapter)imageList.getAdapter()).getViewAtIndex(App.selectedIndex);
+//
+//        getFragmentManager().beginTransaction()
+//                .replace(R.id.pages, f)
 //                .setReorderingAllowed(true)
-//                .addSharedElement(currentView, ViewCompat.getTransitionName(currentView))
-                .addToBackStack(f.toString())
-                .commit();
-    }
+//                .addSharedElement(item, ViewCompat.getTransitionName(item))
+//                .addToBackStack(f.toString())
+//                .commit();
+//    }
+
+//    public void goToGallery(){
+//
+//        FragmentGallery f = FragmentGallery.newInstance();
+//
+//        View item = ((RVAdapter)imageList.getAdapter()).getViewAtIndex(App.selectedIndex);
+//
+//        getFragmentManager().beginTransaction()
+//                .replace(R.id.pages, f)
+//                .setReorderingAllowed(true)
+//                .addSharedElement(item, ViewCompat.getTransitionName(item))
+//                .addToBackStack(f.toString())
+//                .commit();
+//    }
 }
