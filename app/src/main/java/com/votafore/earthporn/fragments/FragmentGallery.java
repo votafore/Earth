@@ -72,6 +72,8 @@ public class FragmentGallery extends Fragment {
             }
         });
 
+        pager.setPageMargin(10);
+
         setEnterSharedElementCallback(new SharedElementCallback() {
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
