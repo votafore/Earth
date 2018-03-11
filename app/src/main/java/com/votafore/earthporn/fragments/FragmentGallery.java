@@ -72,6 +72,7 @@ public class FragmentGallery extends Fragment {
             }
         });
 
+        //https://stackoverflow.com/questions/13914609/viewpager-with-previous-and-next-page-boundaries
         pager.setPageMargin(10);
 
         setEnterSharedElementCallback(new SharedElementCallback() {
