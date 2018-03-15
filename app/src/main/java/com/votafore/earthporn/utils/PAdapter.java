@@ -1,5 +1,8 @@
 package com.votafore.earthporn.utils;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.OnLifecycleEvent;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 
@@ -14,27 +17,31 @@ import com.votafore.earthporn.R;
 import com.votafore.earthporn.models.ImageItem;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @author Vorafore
  * Created on 01.03.2018.
  */
 
-public class PAdapter extends PagerAdapter {
+public class PAdapter extends PagerAdapter implements Observer, LifecycleObserver{
 
-    private List<ImageItem> images = new ArrayList<>();
+    private List<ImageItem> images;
 
     private Map<Integer, WeakReference<ImageView>> map = new ArrayMap();
 
-    public void setImages(List<ImageItem> newList){
-        images = newList;
-        notifyDataSetChanged();
+    public PAdapter(){
+        images = DataSet.getInstance().getList();
     }
 
 
+    @Override
+    public void update(Observable o, Object arg) {
+        notifyDataSetChanged();
+    }
 
     /************** common **************/
 
@@ -78,5 +85,21 @@ public class PAdapter extends PagerAdapter {
             return null;
         }
         return map.get(index).get();
+    }
+
+
+
+
+
+    /****************** life cycle observer ****************/
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    public void startObserve(){
+        DataSet.registerObserver(this);
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void stopObserve(){
+        DataSet.removeObserver(this);
     }
 }

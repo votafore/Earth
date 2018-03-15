@@ -37,8 +37,8 @@ public class ImageItem {
         // adjust width and height
         Image source = item.getPreview().getImages().get(0);
 
-        int max_width  = 1300;
-        int max_Height = 1200;
+        int max_width  = 1000;
+        int max_Height = 1000;
 
         int width = source.getSource().getWidth();
         int height= source.getSource().getHeight();

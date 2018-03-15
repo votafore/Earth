@@ -1,7 +1,6 @@
 package com.votafore.earthporn.fragments;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,39 +13,36 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.votafore.earthporn.ActivityMain;
-import com.votafore.earthporn.App;
 import com.votafore.earthporn.R;
+import com.votafore.earthporn.utils.DataSet;
+import com.votafore.earthporn.utils.ImageLoader;
 import com.votafore.earthporn.utils.RVAdapter;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Vorafore
- * created 03.03.2018
- */
+
 public class FragmentList extends Fragment {
 
-    private App app;
     private RecyclerView imageList;
+    private ImageLoader imageLoader;
+    private RVAdapter adapter;
 
     public static FragmentList newInstance() {
         return new FragmentList();
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        app = (App) ((ActivityMain)context).getApplication();
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app.sendRequestForTopImages();
+
+        imageLoader = new ImageLoader();
+
+        if (savedInstanceState == null && DataSet.getInstance().getList().size() == 0){
+            imageLoader.getTopImages();
+        }
     }
 
     @Override
@@ -56,56 +52,38 @@ public class FragmentList extends Fragment {
 
         View v = View.inflate(container.getContext(), R.layout.fragment_list, null);
 
-        Button btn_getNew = v.findViewById(R.id.get_new_images);
-        btn_getNew.setOnClickListener(v12 -> app.sendRequestForNewImages());
+        v.findViewById(R.id.get_new_images).setOnClickListener(v2 -> imageLoader.getNewImages());
+        v.findViewById(R.id.get_top_images).setOnClickListener(v1 -> imageLoader.getTopImages());
 
-        Button btn_getTop = v.findViewById(R.id.get_top_images);
-        btn_getTop.setOnClickListener(v1 -> app.sendRequestForTopImages());
+        adapter = new RVAdapter();
+
+        getLifecycle().addObserver(adapter);
 
         imageList = v.findViewById(R.id.image_list);
         imageList.setItemAnimator(new DefaultItemAnimator());
-        imageList.setAdapter(app.getAdapter());
+        imageList.setAdapter(adapter);
 
-        app.getAdapter().setListener(new RVAdapter.OnItemClickListener() {
+        adapter.setListener(position -> {
 
-            @Override
-            public void onClick(int position) {
-                App.selectedIndex = position;
+            ActivityMain.selectedIndex = position;
 
-                FragmentFullImage pageFullImage = FragmentFullImage.newInstance();
+            FragmentFullImage pageFullImage = FragmentFullImage.newInstance();
 
-                View item = ((RVAdapter.ViewHolder)imageList.findViewHolderForAdapterPosition(position)).img;
+            View item = ((RVAdapter.ViewHolder)imageList.findViewHolderForAdapterPosition(position)).img;
 
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.pages, pageFullImage)
-                        .setReorderingAllowed(true)
-                        .addSharedElement(item, ViewCompat.getTransitionName(item))
-                        .addToBackStack(pageFullImage.toString())
-                        .commit();
-            }
-
-            @Override
-            public void onLongClick(int position) {
-                App.selectedIndex = position;
-
-                FragmentGallery pageGallery = FragmentGallery.newInstance();
-                View item = ((RVAdapter.ViewHolder)imageList.findViewHolderForAdapterPosition(position)).img;
-
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.pages, pageGallery)
-                        .setReorderingAllowed(true)
-                        .addSharedElement(item, ViewCompat.getTransitionName(item))
-                        .addToBackStack(pageGallery.toString())
-                        .commit();
-            }
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.pages, pageFullImage)
+                    .setReorderingAllowed(true)
+                    .addSharedElement(item, ViewCompat.getTransitionName(item))
+                    .addToBackStack(pageFullImage.toString())
+                    .commit();
         });
 
         setExitSharedElementCallback(new SharedElementCallback() {
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                Log.d("NEW_DATA", "list: onMapSharedElements");
 
-                RVAdapter.ViewHolder selectedViewHolder = (RVAdapter.ViewHolder) imageList.findViewHolderForAdapterPosition(App.selectedIndex);
+                RVAdapter.ViewHolder selectedViewHolder = (RVAdapter.ViewHolder) imageList.findViewHolderForAdapterPosition(ActivityMain.selectedIndex);
 
                 if (selectedViewHolder == null || selectedViewHolder.itemView == null) {
                     return;
@@ -139,11 +117,10 @@ public class FragmentList extends Fragment {
                 imageList.removeOnLayoutChangeListener(this);
 
                 final RecyclerView.LayoutManager layoutManager = imageList.getLayoutManager();
-                View viewAtPosition = layoutManager.findViewByPosition(App.selectedIndex);
+                View viewAtPosition = layoutManager.findViewByPosition(ActivityMain.selectedIndex);
 
                 if (viewAtPosition == null || layoutManager.isViewPartiallyVisible(viewAtPosition, false, true)) {
-                    Log.d("NEW_DATA", "list: scrollToPosition");
-                    imageList.post(() -> layoutManager.scrollToPosition(App.selectedIndex));
+                    imageList.post(() -> layoutManager.scrollToPosition(ActivityMain.selectedIndex));
                 }
             }
         });

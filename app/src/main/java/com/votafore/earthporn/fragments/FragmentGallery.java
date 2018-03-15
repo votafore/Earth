@@ -1,7 +1,6 @@
 package com.votafore.earthporn.fragments;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.SharedElementCallback;
@@ -13,34 +12,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.votafore.earthporn.ActivityMain;
-import com.votafore.earthporn.App;
 import com.votafore.earthporn.R;
+import com.votafore.earthporn.utils.PAdapter;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Votafore
- * created 05.02.2018
- */
 
 public class FragmentGallery extends Fragment {
 
-    private App app;
+    private PAdapter adapter;
 
     public static FragmentGallery newInstance() {
         FragmentGallery fragment = new FragmentGallery();
         return fragment;
-    }
-
-    public FragmentGallery() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        app = (App) ((ActivityMain)context).getApplication();
     }
 
     @Override
@@ -51,10 +36,14 @@ public class FragmentGallery extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_gallery, container, false);
 
-        ViewPager pager = v.findViewById(R.id.gallery_pager);
-        pager.setAdapter(app.getPagerAdapter());
+        adapter = new PAdapter();
 
-        pager.setCurrentItem(App.selectedIndex);
+        getLifecycle().addObserver(adapter);
+
+        ViewPager pager = v.findViewById(R.id.gallery_pager);
+        pager.setAdapter(adapter);
+
+        pager.setCurrentItem(ActivityMain.selectedIndex);
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -63,7 +52,7 @@ public class FragmentGallery extends Fragment {
 
             @Override
             public void onPageSelected(int position) {
-                App.selectedIndex = position;
+                ActivityMain.selectedIndex = position;
             }
 
             @Override
@@ -79,7 +68,7 @@ public class FragmentGallery extends Fragment {
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
                 Log.d("NEW_DATA", "gallery: onMapSharedElements");
-                sharedElements.put(names.get(0), app.getPagerAdapter().getViewByIndex(App.selectedIndex));
+                sharedElements.put(names.get(0), adapter.getViewByIndex(ActivityMain.selectedIndex));
             }
         });
 

@@ -1,9 +1,12 @@
 package com.votafore.earthporn.utils;
 
 
-import android.content.Context;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.OnLifecycleEvent;
+
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,31 +17,33 @@ import com.votafore.earthporn.models.ImageItem;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * @author votarore
  * Created on 21.02.2018.
  */
 
-public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
+public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> implements Observer, LifecycleObserver{
 
     private List<ImageItem> images = new ArrayList<>();
 
-    private Context context;
+    //private Context context;
 
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onClick(int position);
-        void onLongClick(int position);
+    //    void onLongClick(int position);
     }
 
-    public RVAdapter(Context context){
-        this.context = context;
+    public RVAdapter(){
+        images = DataSet.getInstance().getList();
     }
 
-    public void setImages(List<ImageItem> list){
-        images = list;
+    @Override
+    public void update(Observable o, Object arg) {
         notifyDataSetChanged();
     }
 
@@ -51,8 +56,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        View itemView = View.inflate(parent.getContext(), R.layout.list_image_item, null);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_image_item, parent, false);
         return new ViewHolder(itemView);
     }
 
@@ -60,7 +65,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.img.setTransitionName(images.get(position).item.getId());
         holder.ref = new WeakReference<>(holder.img);
-        images.get(position).setImageToImageView(context, holder.ref);
+        images.get(position).setImageToImageView(holder.itemView.getContext(), holder.ref);
     }
 
     @Override
@@ -101,13 +106,30 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
         @Override
         public boolean onLongClick(View v) {
 
-            if (listener == null){
-                return false;
-            }
+//            if (listener == null){
+//                return false;
+//            }
 
-            listener.onLongClick(getAdapterPosition());
+            //listener.onLongClick(getAdapterPosition());
 
             return true;
         }
+    }
+
+
+
+
+
+
+    /****************** life cycle observer ****************/
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    public void startObserve(){
+        DataSet.registerObserver(this);
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void stopObserve(){
+        DataSet.removeObserver(this);
     }
 }
