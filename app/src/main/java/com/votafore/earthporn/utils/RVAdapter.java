@@ -29,30 +29,18 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> implem
 
     private List<ImageItem> images = new ArrayList<>();
 
-    //private Context context;
-
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onClick(int position);
-    //    void onLongClick(int position);
     }
 
     public RVAdapter(){
         images = DataSet.getInstance().getList();
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        notifyDataSetChanged();
-    }
-
     public void setListener(OnItemClickListener listener) {
         this.listener = listener;
-    }
-
-    public ImageItem getImageItem(int index){
-        return images.get(index);
     }
 
     @Override
@@ -79,7 +67,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> implem
         return images.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public ImageView img;
         public WeakReference<ImageView> ref;
@@ -90,7 +78,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> implem
             img = itemView.findViewById(R.id.img);
 
             itemView.setOnClickListener(this);
-            itemView.setOnLongClickListener(this);
         }
 
         @Override
@@ -102,24 +89,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> implem
 
             listener.onClick(getAdapterPosition());
         }
-
-        @Override
-        public boolean onLongClick(View v) {
-
-//            if (listener == null){
-//                return false;
-//            }
-
-            //listener.onLongClick(getAdapterPosition());
-
-            return true;
-        }
     }
 
+    /****************** observer ****************/
 
-
-
-
+    @Override
+    public void update(Observable o, Object arg) {
+        notifyDataSetChanged();
+    }
 
     /****************** life cycle observer ****************/
 

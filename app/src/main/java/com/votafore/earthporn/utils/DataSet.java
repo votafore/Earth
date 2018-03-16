@@ -38,14 +38,6 @@ public class DataSet extends Observable {
         instance.deleteObserver(observer);
     }
 
-    public static void removeAllObservers(){
-        instance.deleteObservers();
-    }
-
-
-
-
-
     /************** data ******************/
 
     List<ImageItem> list;

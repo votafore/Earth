@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,8 +28,8 @@ import java.util.Map;
 public class FragmentList extends Fragment {
 
     private RecyclerView imageList;
-    private ImageLoader imageLoader;
-    private RVAdapter adapter;
+    private ImageLoader  imageLoader;
+    private RVAdapter    adapter;
 
     public static FragmentList newInstance() {
         return new FragmentList();
@@ -55,13 +56,36 @@ public class FragmentList extends Fragment {
         v.findViewById(R.id.get_new_images).setOnClickListener(v2 -> imageLoader.getNewImages());
         v.findViewById(R.id.get_top_images).setOnClickListener(v1 -> imageLoader.getTopImages());
 
-        adapter = new RVAdapter();
+        RVAdapter adapter = new RVAdapter();
 
         getLifecycle().addObserver(adapter);
 
         imageList = v.findViewById(R.id.image_list);
         imageList.setItemAnimator(new DefaultItemAnimator());
         imageList.setAdapter(adapter);
+
+        imageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            private LinearLayoutManager manager = (LinearLayoutManager) imageList.getLayoutManager();
+            private boolean onBottomNow = false;
+
+            View container = v.findViewById(R.id.buttons_container);
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+                int lastVisible = manager.findLastCompletelyVisibleItemPosition();
+                int size = manager.getItemCount() - 1;
+
+                onBottomNow = (lastVisible == size);
+
+                if (onBottomNow) {
+                    container.setVisibility(View.INVISIBLE);
+                } else {
+                    container.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         adapter.setListener(position -> {
 

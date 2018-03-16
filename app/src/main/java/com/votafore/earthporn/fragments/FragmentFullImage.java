@@ -3,6 +3,7 @@ package com.votafore.earthporn.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
@@ -39,7 +40,11 @@ public class FragmentFullImage extends Fragment {
                 |View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 |View.SYSTEM_UI_FLAG_FULLSCREEN
                 |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         activityMain.getSupportActionBar().hide();
     }
 
@@ -55,7 +60,7 @@ public class FragmentFullImage extends Fragment {
 
         setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.open_image));
 
-        ImageItem item = DataSet.getInstance().getList().get(ActivityMain.selectedIndex);
+        ImageItem item = DataSet.getInstance().getItem(ActivityMain.selectedIndex);
 
         View v = inflater.inflate(R.layout.fragment_full_image, container, false);
 

@@ -51,9 +51,9 @@ public class ActivityMain extends AppCompatActivity {
 
         toggle = new ActionBarDrawerToggle(this, drawer, toolbar, 0, 0){
 
-            private ImageView headImg = nav_view.getHeaderView(0).findViewById(R.id.header_img);
-            private DataSet dataSet = DataSet.getInstance();
-            private Random generator = new Random(System.currentTimeMillis());
+            private ImageView headImg   = nav_view.getHeaderView(0).findViewById(R.id.header_img);
+            private DataSet   dataSet   = DataSet.getInstance();
+            private Random    generator = new Random(System.currentTimeMillis());
 
             private boolean isLoading = false;
 
@@ -118,7 +118,6 @@ public class ActivityMain extends AppCompatActivity {
 
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.pages, fragmentList)
-                                .addToBackStack("Main")
                                 .commit();
 
                         return true;
@@ -136,7 +135,6 @@ public class ActivityMain extends AppCompatActivity {
         if (currentFragment == null) {
             mFragmentManager.beginTransaction()
                     .add(R.id.pages, FragmentList.newInstance())
-                    .addToBackStack("Main")
                     .commit();
 
         }

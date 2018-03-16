@@ -15,18 +15,12 @@ import com.bumptech.glide.request.transition.Transition;
 
 import java.lang.ref.WeakReference;
 
-/**
- * @author votarore
- * Created on 21.02.2018.
- */
-
 public class ImageItem {
 
     public Bitmap image;
     public Data_ item;
 
     public void setImageToImageView(Context context, final WeakReference<ImageView> reference){
-        //Log.d("NEW_DATA", "setImageToImageView");
 
         reference.get().setImageBitmap(image);
 
@@ -56,8 +50,6 @@ public class ImageItem {
             width = (int) (height * ratio);
         }
 
-        //Log.d("NEW_DATA", "loadImage");
-
         Glide.with(context)
                 .asBitmap()
                 .load(item.getUrl())
@@ -69,7 +61,11 @@ public class ImageItem {
                         image = resource;
 
                         if (reference.get() != null) {
-                            reference.get().setImageBitmap(resource);
+                            try {
+                                reference.get().setImageBitmap(resource);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 });
