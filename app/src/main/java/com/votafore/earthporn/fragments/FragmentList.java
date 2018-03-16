@@ -29,7 +29,6 @@ public class FragmentList extends Fragment {
 
     private RecyclerView imageList;
     private ImageLoader  imageLoader;
-    private RVAdapter    adapter;
 
     public static FragmentList newInstance() {
         return new FragmentList();
@@ -51,16 +50,16 @@ public class FragmentList extends Fragment {
 
         postponeEnterTransition();
 
-        View v = View.inflate(container.getContext(), R.layout.fragment_list, null);
+        View view = View.inflate(container.getContext(), R.layout.fragment_list, null);
 
-        v.findViewById(R.id.get_new_images).setOnClickListener(v2 -> imageLoader.getNewImages());
-        v.findViewById(R.id.get_top_images).setOnClickListener(v1 -> imageLoader.getTopImages());
+        view.findViewById(R.id.get_new_images).setOnClickListener(v2 -> imageLoader.getNewImages());
+        view.findViewById(R.id.get_top_images).setOnClickListener(v1 -> imageLoader.getTopImages());
 
         RVAdapter adapter = new RVAdapter();
 
         getLifecycle().addObserver(adapter);
 
-        imageList = v.findViewById(R.id.image_list);
+        imageList = view.findViewById(R.id.image_list);
         imageList.setItemAnimator(new DefaultItemAnimator());
         imageList.setAdapter(adapter);
 
@@ -69,7 +68,7 @@ public class FragmentList extends Fragment {
             private LinearLayoutManager manager = (LinearLayoutManager) imageList.getLayoutManager();
             private boolean onBottomNow = false;
 
-            View container = v.findViewById(R.id.buttons_container);
+            View container = view.findViewById(R.id.buttons_container);
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -92,10 +91,11 @@ public class FragmentList extends Fragment {
             ActivityMain.selectedIndex = position;
 
             FragmentFullImage pageFullImage = FragmentFullImage.newInstance();
+            //FragmentGallery pageFullImage = FragmentGallery.newInstance();
 
             View item = ((RVAdapter.ViewHolder)imageList.findViewHolderForAdapterPosition(position)).img;
 
-            getFragmentManager().beginTransaction()
+            getChildFragmentManager().beginTransaction()
                     .replace(R.id.pages, pageFullImage)
                     .setReorderingAllowed(true)
                     .addSharedElement(item, ViewCompat.getTransitionName(item))
@@ -125,8 +125,14 @@ public class FragmentList extends Fragment {
             }
         });
 
-        return v;
+        return view;
 
+    }
+
+    @Nullable
+    @Override
+    public View getView() {
+        return imageList;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.votafore.earthporn.fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.transition.TransitionInflater;
 import android.support.v4.app.Fragment;
@@ -23,8 +24,12 @@ public class FragmentGallery extends Fragment {
     private PAdapter adapter;
 
     public static FragmentGallery newInstance() {
-        FragmentGallery fragment = new FragmentGallery();
-        return fragment;
+        return new FragmentGallery();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 
     @Override

@@ -4,10 +4,14 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +34,9 @@ public class ActivityMain extends AppCompatActivity {
 
     private DrawerLayout drawer;
     private NavigationView nav_view;
+
+    private Fragment fragmentList    = FragmentList.newInstance();
+    private Fragment fragmentGallery = FragmentGallery.newInstance();
 
     private FrameLayout pages;
 
@@ -96,9 +103,6 @@ public class ActivityMain extends AppCompatActivity {
         nav_view.setCheckedItem(R.id.item_main);
         nav_view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 
-            private Fragment fragmentList    = FragmentList.newInstance();
-            private Fragment fragmentGallery = FragmentGallery.newInstance();
-
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -108,8 +112,21 @@ public class ActivityMain extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.item_gallery:
 
-                        getSupportFragmentManager().beginTransaction()
+                        RecyclerView rv_view = (RecyclerView) fragmentList.getView();
+                        GridLayoutManager lManager = (GridLayoutManager) rv_view.getLayoutManager();
+
+                        selectedIndex = lManager.findFirstCompletelyVisibleItemPosition();
+
+                        View itemView = lManager.findViewByPosition(selectedIndex);
+
+                        // since it is root element... find ImageView
+                        itemView = itemView.findViewById(R.id.img);
+
+                        fragmentList.getChildFragmentManager().beginTransaction()
                                 .replace(R.id.pages, fragmentGallery)
+                                .setReorderingAllowed(true)
+                                .addSharedElement(itemView, ViewCompat.getTransitionName(itemView))
+                                .addToBackStack(fragmentGallery.toString())
                                 .commit();
 
                         return true;
@@ -134,7 +151,7 @@ public class ActivityMain extends AppCompatActivity {
 
         if (currentFragment == null) {
             mFragmentManager.beginTransaction()
-                    .add(R.id.pages, FragmentList.newInstance())
+                    .add(R.id.pages, fragmentList)
                     .commit();
 
         }
