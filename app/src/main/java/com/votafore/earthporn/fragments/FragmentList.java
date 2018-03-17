@@ -1,18 +1,13 @@
 package com.votafore.earthporn.fragments;
 
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +25,7 @@ import java.util.Map;
 public class FragmentList extends Fragment {
 
     private RecyclerView imageList;
-    private ImageLoader  imageLoader;
+    private ImageLoader imageLoader;
 
     public static FragmentList newInstance() {
         return new FragmentList();
@@ -52,25 +47,23 @@ public class FragmentList extends Fragment {
 
         postponeEnterTransition();
 
-        View view = View.inflate(container.getContext(), R.layout.fragment_list, null);
+        View v = inflater.inflate(R.layout.fragment_list, container, false);
 
-        view.findViewById(R.id.get_new_images).setOnClickListener(v2 -> imageLoader.getNewImages());
-        view.findViewById(R.id.get_top_images).setOnClickListener(v1 -> imageLoader.getTopImages());
+        v.findViewById(R.id.get_new_images).setOnClickListener(v1 -> imageLoader.getNewImages());
+        v.findViewById(R.id.get_top_images).setOnClickListener(v2 -> imageLoader.getTopImages());
 
         RVAdapter adapter = new RVAdapter();
-
         getLifecycle().addObserver(adapter);
 
-        imageList = view.findViewById(R.id.image_list);
+        imageList = v.findViewById(R.id.image_list);
         imageList.setItemAnimator(new DefaultItemAnimator());
         imageList.setAdapter(adapter);
-
         imageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             private LinearLayoutManager manager = (LinearLayoutManager) imageList.getLayoutManager();
             private boolean onBottomNow = false;
 
-            View container = view.findViewById(R.id.buttons_container);
+            View container = v.findViewById(R.id.buttons_container);
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -126,34 +119,6 @@ public class FragmentList extends Fragment {
             }
         });
 
-        return view;
-
+        return v;
     }
-
-    @Nullable
-    @Override
-    public View getView() {
-        return imageList;
-    }
-
-    //    @Override
-//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//
-//        // scroll to position
-//        imageList.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-//            @Override
-//            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-//
-//                imageList.removeOnLayoutChangeListener(this);
-//
-//                final RecyclerView.LayoutManager layoutManager = imageList.getLayoutManager();
-//                View viewAtPosition = layoutManager.findViewByPosition(ActivityMain.selectedIndex);
-//
-//                if (viewAtPosition == null || layoutManager.isViewPartiallyVisible(viewAtPosition, false, true)) {
-//                    imageList.post(() -> layoutManager.scrollToPosition(ActivityMain.selectedIndex));
-//                }
-//            }
-//        });
-//    }
 }

@@ -21,8 +21,6 @@ import java.util.Map;
 
 public class FragmentGallery extends Fragment {
 
-    private PAdapter adapter;
-
     public static FragmentGallery newInstance() {
         return new FragmentGallery();
     }
@@ -30,20 +28,17 @@ public class FragmentGallery extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        Log.d("TESTS", "FragmentGallery -- onCreateView");
-
         postponeEnterTransition();
         setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.open_image));
 
         View v = inflater.inflate(R.layout.fragment_gallery, container, false);
 
-        adapter = new PAdapter();
+        PAdapter adapter = new PAdapter();
 
         getLifecycle().addObserver(adapter);
 
         ViewPager pager = v.findViewById(R.id.gallery_pager);
         pager.setAdapter(adapter);
-
         pager.setCurrentItem(ActivityMain.selectedIndex);
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -68,7 +63,6 @@ public class FragmentGallery extends Fragment {
         setEnterSharedElementCallback(new SharedElementCallback() {
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                Log.d("TESTS", "FragmentGallery -- onMapSharedElements");
                 sharedElements.put(names.get(0), adapter.getViewByIndex(ActivityMain.selectedIndex));
             }
         });

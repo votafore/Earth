@@ -111,18 +111,17 @@ public class ActivityMain extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.item_gallery:
 
-                        RecyclerView rv_view = (RecyclerView) fragmentList.getView();
-                        GridLayoutManager lManager = (GridLayoutManager) rv_view.getLayoutManager();
+                        RecyclerView rv_view = fragmentList.getView().findViewById(R.id.image_list);
+                        GridLayoutManager layoutManager = (GridLayoutManager) rv_view.getLayoutManager();
 
-                        ActivityMain.selectedIndex = lManager.findFirstCompletelyVisibleItemPosition();
+                        ActivityMain.selectedIndex = layoutManager.findFirstCompletelyVisibleItemPosition();
 
-                        View itemView = lManager.findViewByPosition(ActivityMain.selectedIndex).findViewById(R.id.img);
+                        View itemView = layoutManager.findViewByPosition(ActivityMain.selectedIndex).findViewById(R.id.img);
 
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.pages, fragmentGallery)
                                 .setReorderingAllowed(true)
                                 .addSharedElement(itemView, ViewCompat.getTransitionName(itemView))
-                                //.addToBackStack(fragmentGallery.toString())
                                 .commit();
 
                         return true;
