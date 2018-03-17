@@ -22,11 +22,6 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-/**
- * @author Vorafore
- * Created on 01.03.2018.
- */
-
 public class PAdapter extends PagerAdapter implements Observer, LifecycleObserver{
 
     private List<ImageItem> images;
@@ -59,17 +54,20 @@ public class PAdapter extends PagerAdapter implements Observer, LifecycleObserve
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
 
-        Log.d("NEW_DATA", String.format("PAdapter: instantiateItem... position:%d", position));
+        Log.d("TESTS", String.format("PAdapter: instantiateItem... position:%d", position));
 
         View v = LayoutInflater.from(container.getContext()).inflate(R.layout.pager_item, container, false);
 
         ImageView img = v.findViewById(R.id.img_full);
         img.setTransitionName(images.get(position).item.getId());
-        images.get(position).setImageToImageView(container.getContext(), new WeakReference<>(img));
+
+        WeakReference<ImageView> reference = new WeakReference<>(img);
+
+        images.get(position).setImageToImageView(container.getContext(), reference);
 
         container.addView(v);
 
-        map.put(position, new WeakReference<>(img));
+        map.put(position, reference);
 
         return v;
     }
@@ -77,6 +75,7 @@ public class PAdapter extends PagerAdapter implements Observer, LifecycleObserve
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
+        map.get(position).clear();
         map.remove(position);
     }
 

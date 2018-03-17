@@ -1,6 +1,7 @@
 package com.votafore.earthporn.fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -91,11 +93,10 @@ public class FragmentList extends Fragment {
             ActivityMain.selectedIndex = position;
 
             FragmentFullImage pageFullImage = FragmentFullImage.newInstance();
-            //FragmentGallery pageFullImage = FragmentGallery.newInstance();
 
             View item = ((RVAdapter.ViewHolder)imageList.findViewHolderForAdapterPosition(position)).img;
 
-            getChildFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .replace(R.id.pages, pageFullImage)
                     .setReorderingAllowed(true)
                     .addSharedElement(item, ViewCompat.getTransitionName(item))
@@ -135,24 +136,24 @@ public class FragmentList extends Fragment {
         return imageList;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        // scroll to position
-        imageList.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-
-                imageList.removeOnLayoutChangeListener(this);
-
-                final RecyclerView.LayoutManager layoutManager = imageList.getLayoutManager();
-                View viewAtPosition = layoutManager.findViewByPosition(ActivityMain.selectedIndex);
-
-                if (viewAtPosition == null || layoutManager.isViewPartiallyVisible(viewAtPosition, false, true)) {
-                    imageList.post(() -> layoutManager.scrollToPosition(ActivityMain.selectedIndex));
-                }
-            }
-        });
-    }
+    //    @Override
+//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//
+//        // scroll to position
+//        imageList.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+//            @Override
+//            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+//
+//                imageList.removeOnLayoutChangeListener(this);
+//
+//                final RecyclerView.LayoutManager layoutManager = imageList.getLayoutManager();
+//                View viewAtPosition = layoutManager.findViewByPosition(ActivityMain.selectedIndex);
+//
+//                if (viewAtPosition == null || layoutManager.isViewPartiallyVisible(viewAtPosition, false, true)) {
+//                    imageList.post(() -> layoutManager.scrollToPosition(ActivityMain.selectedIndex));
+//                }
+//            }
+//        });
+//    }
 }

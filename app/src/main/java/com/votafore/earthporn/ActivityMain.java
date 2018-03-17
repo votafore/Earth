@@ -10,7 +10,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -115,18 +114,15 @@ public class ActivityMain extends AppCompatActivity {
                         RecyclerView rv_view = (RecyclerView) fragmentList.getView();
                         GridLayoutManager lManager = (GridLayoutManager) rv_view.getLayoutManager();
 
-                        selectedIndex = lManager.findFirstCompletelyVisibleItemPosition();
+                        ActivityMain.selectedIndex = lManager.findFirstCompletelyVisibleItemPosition();
 
-                        View itemView = lManager.findViewByPosition(selectedIndex);
+                        View itemView = lManager.findViewByPosition(ActivityMain.selectedIndex).findViewById(R.id.img);
 
-                        // since it is root element... find ImageView
-                        itemView = itemView.findViewById(R.id.img);
-
-                        fragmentList.getChildFragmentManager().beginTransaction()
+                        getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.pages, fragmentGallery)
                                 .setReorderingAllowed(true)
                                 .addSharedElement(itemView, ViewCompat.getTransitionName(itemView))
-                                .addToBackStack(fragmentGallery.toString())
+                                //.addToBackStack(fragmentGallery.toString())
                                 .commit();
 
                         return true;

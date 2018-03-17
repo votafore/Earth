@@ -1,12 +1,12 @@
 package com.votafore.earthporn.fragments;
 
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.transition.TransitionInflater;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
+import android.transition.TransitionInflater;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,12 +28,9 @@ public class FragmentGallery extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        Log.d("TESTS", "FragmentGallery -- onCreateView");
 
         postponeEnterTransition();
         setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.open_image));
@@ -71,6 +68,7 @@ public class FragmentGallery extends Fragment {
         setEnterSharedElementCallback(new SharedElementCallback() {
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                Log.d("TESTS", "FragmentGallery -- onMapSharedElements");
                 sharedElements.put(names.get(0), adapter.getViewByIndex(ActivityMain.selectedIndex));
             }
         });
