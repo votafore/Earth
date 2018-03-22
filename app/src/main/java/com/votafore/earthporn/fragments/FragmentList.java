@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Explode;
@@ -60,7 +59,6 @@ public class FragmentList extends Fragment {
         getLifecycle().addObserver(adapter);
 
         imageList = v.findViewById(R.id.image_list);
-        imageList.setItemAnimator(new DefaultItemAnimator());
         imageList.setAdapter(adapter);
         imageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
