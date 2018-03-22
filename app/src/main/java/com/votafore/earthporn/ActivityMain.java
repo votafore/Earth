@@ -12,11 +12,13 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.votafore.earthporn.customviews.AutofitRecyclerView;
 import com.votafore.earthporn.fragments.FragmentGallery;
 import com.votafore.earthporn.fragments.FragmentList;
 import com.votafore.earthporn.models.ImageItem;
@@ -34,8 +36,8 @@ public class ActivityMain extends AppCompatActivity {
     private DrawerLayout drawer;
     private NavigationView nav_view;
 
-    private Fragment fragmentList    = FragmentList.newInstance();
-    private Fragment fragmentGallery = FragmentGallery.newInstance();
+    private FragmentList    fragmentList    = FragmentList.newInstance();
+    private FragmentGallery fragmentGallery = FragmentGallery.newInstance();
 
     private FrameLayout pages;
 
@@ -150,5 +152,33 @@ public class ActivityMain extends AppCompatActivity {
                     .commit();
 
         }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.appbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.change_grid:
+
+                FragmentList fragmentList = (FragmentList) getSupportFragmentManager().findFragmentById(R.id.pages);
+
+                int newMode = fragmentList.getListMode();
+
+                newMode = newMode == AutofitRecyclerView.MODE_LIST ? AutofitRecyclerView.MODE_GRID : AutofitRecyclerView.MODE_LIST;
+                fragmentList.setListMode(newMode);
+
+                if (newMode == AutofitRecyclerView.MODE_LIST){
+                    item.setIcon(R.drawable.mode_grid);
+                } else {
+                    item.setIcon(R.drawable.mode_list);
+                }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

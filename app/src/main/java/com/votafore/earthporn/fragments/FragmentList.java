@@ -8,12 +8,14 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Explode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.votafore.earthporn.ActivityMain;
 import com.votafore.earthporn.R;
+import com.votafore.earthporn.customviews.AutofitRecyclerView;
 import com.votafore.earthporn.utils.DataSet;
 import com.votafore.earthporn.utils.ImageLoader;
 import com.votafore.earthporn.utils.RVAdapter;
@@ -24,7 +26,7 @@ import java.util.Map;
 
 public class FragmentList extends Fragment {
 
-    private RecyclerView imageList;
+    private AutofitRecyclerView imageList;
     private ImageLoader imageLoader;
 
     public static FragmentList newInstance() {
@@ -40,6 +42,8 @@ public class FragmentList extends Fragment {
         if (savedInstanceState == null && DataSet.getInstance().getList().size() == 0){
             imageLoader.getTopImages();
         }
+
+        setExitTransition(new Explode().setDuration(200));
     }
 
     @Override
@@ -120,5 +124,13 @@ public class FragmentList extends Fragment {
         });
 
         return v;
+    }
+
+    public void setListMode(int newMode){
+        imageList.changeMode(newMode);
+    }
+
+    public int getListMode(){
+        return imageList.getMode();
     }
 }
