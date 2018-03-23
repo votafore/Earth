@@ -11,7 +11,8 @@
         android:layout_height="match_parent"
         android:layout_margin="4dp"
         android:columnWidth="@dimen/rv_column_width"
-        android:background="#ccc"/>
+        android:background="#ccc"
+        android:layoutAnimation="@anim/list_layout_anim"/>
 
     <LinearLayout
         android:id="@+id/buttons_container"
