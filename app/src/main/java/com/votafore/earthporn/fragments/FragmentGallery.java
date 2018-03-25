@@ -6,14 +6,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.transition.TransitionInflater;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.votafore.earthporn.ActivityMain;
 import com.votafore.earthporn.R;
-import com.votafore.earthporn.utils.PAdapter;
+import com.votafore.earthporn.utils.GalleryAdapter;
 
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,7 @@ public class FragmentGallery extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_gallery, container, false);
 
-        PAdapter adapter = new PAdapter();
+        GalleryAdapter adapter = new GalleryAdapter();
 
         getLifecycle().addObserver(adapter);
 

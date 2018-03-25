@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +21,13 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-public class PAdapter extends PagerAdapter implements Observer, LifecycleObserver{
+public class GalleryAdapter extends PagerAdapter implements Observer, LifecycleObserver{
 
     private List<ImageItem> images;
 
     private Map<Integer, WeakReference<ImageView>> map = new ArrayMap();
 
-    public PAdapter(){
+    public GalleryAdapter(){
         images = DataSet.getInstance().getList();
     }
 
@@ -53,8 +52,6 @@ public class PAdapter extends PagerAdapter implements Observer, LifecycleObserve
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-
-        Log.d("TESTS", String.format("PAdapter: instantiateItem... position:%d", position));
 
         View v = LayoutInflater.from(container.getContext()).inflate(R.layout.pager_item, container, false);
 

@@ -83,27 +83,6 @@ public class AutofitRecyclerView extends RecyclerView {
             }
         };
 
-//        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-//            @Override
-//            public int getSpanSize(int position) {
-//
-//                // structure of group
-//                // row 1: columnWidth * 2... as many as can be   amount = spanCount
-//                // row 2: columnWidth... as many as can be       amount = spanCount / 2
-//
-//                int totalCountForItemsGroup = spanCount + spanCount / 2;
-//
-//                int indexInGroup = position % totalCountForItemsGroup;
-//
-//                // if this is a fist row
-//                if (indexInGroup < spanCount/2){
-//                    return Math.min(2, spanCount);
-//                }
-//
-//                return 1;
-//            }
-//        });
-
         manager.setSpanSizeLookup(sslForGrid);
 
         setLayoutManager(manager);
@@ -113,8 +92,7 @@ public class AutofitRecyclerView extends RecyclerView {
     protected void onMeasure(int widthSpec, int heightSpec) {
         super.onMeasure(widthSpec, heightSpec);
         if (columnWidth > 0) {
-            spanCount = Math.max(1, getMeasuredWidth() / columnWidth);
-            spanCount *= 2;
+            spanCount = Math.max(1, getMeasuredWidth() / columnWidth)  * 2;
             manager.setSpanCount(spanCount);
         }
     }

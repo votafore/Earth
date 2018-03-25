@@ -9,6 +9,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Explode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,15 +20,20 @@ import com.votafore.earthporn.R;
 import com.votafore.earthporn.customviews.AutofitRecyclerView;
 import com.votafore.earthporn.utils.DataSet;
 import com.votafore.earthporn.utils.ImageLoader;
-import com.votafore.earthporn.utils.RVAdapter;
+import com.votafore.earthporn.utils.ImageListAdapter;
 
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 
 public class FragmentList extends Fragment {
 
-    private AutofitRecyclerView imageList;
+    @BindView(R.id.image_list) AutofitRecyclerView imageList;
+
     private ImageLoader imageLoader;
 
     public static FragmentList newInstance() {
@@ -42,7 +50,9 @@ public class FragmentList extends Fragment {
             imageLoader.getTopImages();
         }
 
-        setExitTransition(new Explode().setDuration(200));
+        setExitTransition(new Explode().setDuration(getResources().getInteger(R.integer.anim_std_duration)));
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -50,22 +60,20 @@ public class FragmentList extends Fragment {
 
         postponeEnterTransition();
 
-        View v = inflater.inflate(R.layout.fragment_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
-        v.findViewById(R.id.get_new_images).setOnClickListener(v1 -> imageLoader.getNewImages());
-        v.findViewById(R.id.get_top_images).setOnClickListener(v2 -> imageLoader.getTopImages());
+        ButterKnife.bind(this, rootView);
 
-        RVAdapter adapter = new RVAdapter();
+        ImageListAdapter adapter = new ImageListAdapter();
         getLifecycle().addObserver(adapter);
 
-        imageList = v.findViewById(R.id.image_list);
         imageList.setAdapter(adapter);
         imageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             private LinearLayoutManager manager = (LinearLayoutManager) imageList.getLayoutManager();
             private boolean onBottomNow = false;
 
-            View container = v.findViewById(R.id.buttons_container);
+            View container = rootView.findViewById(R.id.buttons_container);
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -89,7 +97,7 @@ public class FragmentList extends Fragment {
 
             FragmentFullImage pageFullImage = FragmentFullImage.newInstance();
 
-            View item = ((RVAdapter.ViewHolder)imageList.findViewHolderForAdapterPosition(position)).img;
+            View item = ((ImageListAdapter.ViewHolder)imageList.findViewHolderForAdapterPosition(position)).img;
 
             getFragmentManager().beginTransaction()
                     .replace(R.id.pages, pageFullImage)
@@ -103,7 +111,7 @@ public class FragmentList extends Fragment {
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
 
-                RVAdapter.ViewHolder selectedViewHolder = (RVAdapter.ViewHolder) imageList.findViewHolderForAdapterPosition(ActivityMain.selectedIndex);
+                ImageListAdapter.ViewHolder selectedViewHolder = (ImageListAdapter.ViewHolder) imageList.findViewHolderForAdapterPosition(ActivityMain.selectedIndex);
 
                 if (selectedViewHolder == null || selectedViewHolder.itemView == null) {
                     return;
@@ -121,14 +129,53 @@ public class FragmentList extends Fragment {
             }
         });
 
-        return v;
+        return rootView;
     }
 
-    public void setListMode(int newMode){
-        imageList.changeMode(newMode);
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.appbar_menu, menu);
+
+        MenuItem item = menu.findItem(R.id.change_grid);
+
+        if (imageList.getMode() == AutofitRecyclerView.MODE_LIST){
+            item.setIcon(R.drawable.mode_grid);
+        } else {
+            item.setIcon(R.drawable.mode_list);
+        }
     }
 
-    public int getListMode(){
-        return imageList.getMode();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.change_grid:
+
+                int newMode = imageList.getMode();
+                newMode = newMode == AutofitRecyclerView.MODE_LIST ? AutofitRecyclerView.MODE_GRID : AutofitRecyclerView.MODE_LIST;
+
+                imageList.changeMode(newMode);
+
+                if (newMode == AutofitRecyclerView.MODE_LIST){
+                    item.setIcon(R.drawable.mode_grid);
+                } else {
+                    item.setIcon(R.drawable.mode_list);
+                }
+
+                return true;
+        }
+
+        return false;
     }
+
+    @OnClick(R.id.get_new_images)
+    public void getNewImages(View view){
+        imageLoader.getNewImages();
+    }
+
+    @OnClick(R.id.get_top_images)
+    public void getTopImages(View view){
+        imageLoader.getTopImages();
+    }
+
 }
