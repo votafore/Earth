@@ -17,7 +17,6 @@ import com.votafore.earthporn.models.ImageItem;
 import com.votafore.earthporn.utils.DataSet;
 
 /**
- * @author Vorafore
  * created 03.03.2018
  */
 public class FragmentFullImage extends Fragment {

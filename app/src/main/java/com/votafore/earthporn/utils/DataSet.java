@@ -40,7 +40,7 @@ public class DataSet extends Observable {
 
     /************** data ******************/
 
-    List<ImageItem> list;
+    private List<ImageItem> list;
 
     public List<ImageItem> getList(){
         return list;

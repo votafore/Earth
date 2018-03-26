@@ -20,33 +20,34 @@ public class ImageItem {
     public Bitmap image;
     public Data_ item;
 
+    private int MAX_SIZE = 800;
+
     public void setImageToImageView(Context context, final WeakReference<ImageView> reference){
 
-        reference.get().setImageBitmap(image);
-
         if (image != null){
-            return;
+            if (!image.isRecycled()){
+                reference.get().setImageBitmap(image);
+                return;
+            }
         }
 
-        // adjust width and height
+        // get width and height of image
         Image source = item.getPreview().getImages().get(0);
 
-        int max_width  = 1000;
-        int max_Height = 1000;
+        int width  = source.getSource().getWidth();
+        int height = source.getSource().getHeight();
 
-        int width = source.getSource().getWidth();
-        int height= source.getSource().getHeight();
-
+        // adjusting width and height in order to reduce size
         float ratio = (float) width / height;
 
         if(width > height){
 
-            width = Math.min(max_width, width);
+            width = Math.min(MAX_SIZE, width);
             height = (int) (width / ratio);
 
         } else {
 
-            height = Math.min(max_Height, height);
+            height = Math.min(MAX_SIZE, height);
             width = (int) (height * ratio);
         }
 
@@ -61,11 +62,7 @@ public class ImageItem {
                         image = resource;
 
                         if (reference.get() != null) {
-                            try {
                                 reference.get().setImageBitmap(resource);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
                         }
                     }
                 });

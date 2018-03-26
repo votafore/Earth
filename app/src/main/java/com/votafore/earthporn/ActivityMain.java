@@ -12,13 +12,11 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.votafore.earthporn.customviews.AutofitRecyclerView;
 import com.votafore.earthporn.fragments.FragmentGallery;
 import com.votafore.earthporn.fragments.FragmentList;
 import com.votafore.earthporn.models.ImageItem;
@@ -28,30 +26,28 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Random;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class ActivityMain extends AppCompatActivity {
 
+    @BindView(R.id.pages)    FrameLayout pages;
+    @BindView(R.id.drawer)   DrawerLayout drawer;
+    @BindView(R.id.nav_view) NavigationView nav_view;
+
     public static int selectedIndex = -1;
-
-    private DrawerLayout drawer;
-    private NavigationView nav_view;
-
-    private FragmentList    fragmentList    = FragmentList.newInstance();
-    private FragmentGallery fragmentGallery = FragmentGallery.newInstance();
-
-    private FrameLayout pages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ButterKnife.bind(this);
+
         Toolbar toolbar;
         ActionBarDrawerToggle toggle;
 
-        pages    = findViewById(R.id.pages);
-        drawer   = findViewById(R.id.drawer);
-        nav_view = findViewById(R.id.nav_view);
         toolbar  = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
@@ -63,7 +59,7 @@ public class ActivityMain extends AppCompatActivity {
             private DataSet   dataSet   = DataSet.getInstance();
             private Random    generator = new Random(System.currentTimeMillis());
 
-            private boolean isLoading = false;
+            private boolean isLoadingAllowed = true;
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -71,30 +67,22 @@ public class ActivityMain extends AppCompatActivity {
 
                 pages.setTranslationX(80 * slideOffset);
 
-                if(slideOffset == 0){
-                    isLoading = false;
-                    headImg.setImageBitmap(null);
+                if (!isLoadingAllowed || dataSet.getList().size() == 0){
                     return;
                 }
 
-                if(isLoading)
-                    return;
+                int listSize = dataSet.getList().size();
 
-                List<ImageItem> list = dataSet.getList();
+                dataSet.getList().get(generator.nextInt(listSize)).setImageToImageView(ActivityMain.this, new WeakReference<>(headImg));
 
-                if (list.size() == 0)
-                    return;
-
-                list.get(generator.nextInt(list.size())).setImageToImageView(ActivityMain.this, new WeakReference<>(headImg));
-
-                isLoading = true;
+                isLoadingAllowed = false;
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 headImg.setImageBitmap(null);
-                isLoading = false;
+                isLoadingAllowed = true;
             }
         };
 
@@ -113,6 +101,15 @@ public class ActivityMain extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.item_gallery:
 
+                        FragmentList fragmentList;
+
+                        try {
+                            fragmentList = (FragmentList) getSupportFragmentManager().findFragmentById(R.id.pages);
+                        }catch (ClassCastException e) {
+                            // it seems that menu item selected twice (or more)
+                            return false;
+                        }
+
                         RecyclerView rv_view = fragmentList.getView().findViewById(R.id.image_list);
                         GridLayoutManager layoutManager = (GridLayoutManager) rv_view.getLayoutManager();
 
@@ -121,7 +118,7 @@ public class ActivityMain extends AppCompatActivity {
                         View itemView = layoutManager.findViewByPosition(ActivityMain.selectedIndex).findViewById(R.id.img);
 
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.pages, fragmentGallery)
+                                .replace(R.id.pages, FragmentGallery.newInstance())
                                 .setReorderingAllowed(true)
                                 .addSharedElement(itemView, ViewCompat.getTransitionName(itemView))
                                 .commit();
@@ -131,7 +128,7 @@ public class ActivityMain extends AppCompatActivity {
                     case R.id.item_main:
 
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.pages, fragmentList)
+                                .replace(R.id.pages, FragmentList.newInstance())
                                 .commit();
 
                         return true;
@@ -148,37 +145,9 @@ public class ActivityMain extends AppCompatActivity {
 
         if (currentFragment == null) {
             mFragmentManager.beginTransaction()
-                    .add(R.id.pages, fragmentList)
+                    .add(R.id.pages, FragmentList.newInstance())
                     .commit();
 
         }
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.appbar_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()){
-            case R.id.change_grid:
-
-                FragmentList fragmentList = (FragmentList) getSupportFragmentManager().findFragmentById(R.id.pages);
-
-                int newMode = fragmentList.getListMode();
-
-                newMode = newMode == AutofitRecyclerView.MODE_LIST ? AutofitRecyclerView.MODE_GRID : AutofitRecyclerView.MODE_LIST;
-                fragmentList.setListMode(newMode);
-
-                if (newMode == AutofitRecyclerView.MODE_LIST){
-                    item.setIcon(R.drawable.mode_grid);
-                } else {
-                    item.setIcon(R.drawable.mode_list);
-                }
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

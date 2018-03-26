@@ -25,7 +25,7 @@ import java.util.Observer;
  * Created on 21.02.2018.
  */
 
-public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> implements Observer, LifecycleObserver{
+public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.ViewHolder> implements Observer, LifecycleObserver{
 
     private List<ImageItem> images = new ArrayList<>();
 
@@ -35,7 +35,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> implem
         void onClick(int position);
     }
 
-    public RVAdapter(){
+    public ImageListAdapter(){
         images = DataSet.getInstance().getList();
     }
 

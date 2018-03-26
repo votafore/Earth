@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="rv_column_width">300dp</dimen>
+
+    <integer name="anim_std_duration">250</integer>
+
 </resources>
