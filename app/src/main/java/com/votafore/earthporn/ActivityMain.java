@@ -38,10 +38,6 @@ public class ActivityMain extends AppCompatActivity {
 
     public static int selectedIndex = -1;
 
-    private FragmentList    fragmentList    = FragmentList.newInstance();
-    private FragmentGallery fragmentGallery = FragmentGallery.newInstance();
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +59,7 @@ public class ActivityMain extends AppCompatActivity {
             private DataSet   dataSet   = DataSet.getInstance();
             private Random    generator = new Random(System.currentTimeMillis());
 
-            private boolean isLoading = false;
+            private boolean isLoadingAllowed = true;
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -71,30 +67,22 @@ public class ActivityMain extends AppCompatActivity {
 
                 pages.setTranslationX(80 * slideOffset);
 
-                if(slideOffset == 0){
-                    isLoading = false;
-                    headImg.setImageBitmap(null);
+                if (!isLoadingAllowed || dataSet.getList().size() == 0){
                     return;
                 }
 
-                if(isLoading)
-                    return;
+                int listSize = dataSet.getList().size();
 
-                List<ImageItem> list = dataSet.getList();
+                dataSet.getList().get(generator.nextInt(listSize)).setImageToImageView(ActivityMain.this, new WeakReference<>(headImg));
 
-                if (list.size() == 0)
-                    return;
-
-                list.get(generator.nextInt(list.size())).setImageToImageView(ActivityMain.this, new WeakReference<>(headImg));
-
-                isLoading = true;
+                isLoadingAllowed = false;
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 headImg.setImageBitmap(null);
-                isLoading = false;
+                isLoadingAllowed = true;
             }
         };
 
@@ -113,8 +101,14 @@ public class ActivityMain extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.item_gallery:
 
-                        // todo: problem here is when gallery is selected twice
-                        FragmentList fragmentList = (FragmentList) getSupportFragmentManager().findFragmentById(R.id.pages);
+                        FragmentList fragmentList;
+
+                        try {
+                            fragmentList = (FragmentList) getSupportFragmentManager().findFragmentById(R.id.pages);
+                        }catch (ClassCastException e) {
+                            // it seems that menu item selected twice (or more)
+                            return false;
+                        }
 
                         RecyclerView rv_view = fragmentList.getView().findViewById(R.id.image_list);
                         GridLayoutManager layoutManager = (GridLayoutManager) rv_view.getLayoutManager();
@@ -124,7 +118,7 @@ public class ActivityMain extends AppCompatActivity {
                         View itemView = layoutManager.findViewByPosition(ActivityMain.selectedIndex).findViewById(R.id.img);
 
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.pages, fragmentGallery)
+                                .replace(R.id.pages, FragmentGallery.newInstance())
                                 .setReorderingAllowed(true)
                                 .addSharedElement(itemView, ViewCompat.getTransitionName(itemView))
                                 .commit();
@@ -134,7 +128,7 @@ public class ActivityMain extends AppCompatActivity {
                     case R.id.item_main:
 
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.pages, ActivityMain.this.fragmentList)
+                                .replace(R.id.pages, FragmentList.newInstance())
                                 .commit();
 
                         return true;
@@ -151,7 +145,7 @@ public class ActivityMain extends AppCompatActivity {
 
         if (currentFragment == null) {
             mFragmentManager.beginTransaction()
-                    .add(R.id.pages, fragmentList)
+                    .add(R.id.pages, FragmentList.newInstance())
                     .commit();
 
         }
