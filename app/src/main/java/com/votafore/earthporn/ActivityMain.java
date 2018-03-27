@@ -2,28 +2,20 @@ package com.votafore.earthporn;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.votafore.earthporn.fragments.FragmentGallery;
-import com.votafore.earthporn.fragments.FragmentList;
-import com.votafore.earthporn.models.ImageItem;
 import com.votafore.earthporn.utils.DataSet;
+import com.votafore.earthporn.utils.FragmentRouter;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 import java.util.Random;
 
 import butterknife.BindView;
@@ -38,12 +30,16 @@ public class ActivityMain extends AppCompatActivity {
 
     public static int selectedIndex = -1;
 
+    private FragmentRouter router;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+
+        router = new FragmentRouter(getSupportFragmentManager());
 
         Toolbar toolbar;
         ActionBarDrawerToggle toggle;
@@ -64,8 +60,6 @@ public class ActivityMain extends AppCompatActivity {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-
-                pages.setTranslationX(80 * slideOffset);
 
                 if (!isLoadingAllowed || dataSet.getList().size() == 0){
                     return;
@@ -92,45 +86,30 @@ public class ActivityMain extends AppCompatActivity {
         nav_view.setCheckedItem(R.id.item_main);
         nav_view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 
+            private int lastSelectedItem = R.id.item_main;
+
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                 drawer.closeDrawers();
+
+                if (lastSelectedItem == item.getItemId()){
+                    return false;
+                }
+
+                lastSelectedItem = item.getItemId();
+
                 item.setChecked(true);
 
-                switch (item.getItemId()){
+                switch (lastSelectedItem){
                     case R.id.item_gallery:
 
-                        FragmentList fragmentList;
-
-                        try {
-                            fragmentList = (FragmentList) getSupportFragmentManager().findFragmentById(R.id.pages);
-                        }catch (ClassCastException e) {
-                            // it seems that menu item selected twice (or more)
-                            return false;
-                        }
-
-                        RecyclerView rv_view = fragmentList.getView().findViewById(R.id.image_list);
-                        GridLayoutManager layoutManager = (GridLayoutManager) rv_view.getLayoutManager();
-
-                        ActivityMain.selectedIndex = layoutManager.findFirstCompletelyVisibleItemPosition();
-
-                        View itemView = layoutManager.findViewByPosition(ActivityMain.selectedIndex).findViewById(R.id.img);
-
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.pages, FragmentGallery.newInstance())
-                                .setReorderingAllowed(true)
-                                .addSharedElement(itemView, ViewCompat.getTransitionName(itemView))
-                                .commit();
-
+                        router.goToGalleryFragment();
                         return true;
 
                     case R.id.item_main:
 
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.pages, FragmentList.newInstance())
-                                .commit();
-
+                        router.goToImageListFragment();
                         return true;
 
                     default:
@@ -139,15 +118,10 @@ public class ActivityMain extends AppCompatActivity {
             }
         });
 
-        FragmentManager mFragmentManager = getSupportFragmentManager();
+        router.openImageListFragment();
+    }
 
-        Fragment currentFragment = mFragmentManager.findFragmentById(R.id.pages);
-
-        if (currentFragment == null) {
-            mFragmentManager.beginTransaction()
-                    .add(R.id.pages, FragmentList.newInstance())
-                    .commit();
-
-        }
+    public FragmentRouter getRouter(){
+        return router;
     }
 }

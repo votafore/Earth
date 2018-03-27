@@ -31,6 +31,10 @@ public class ImageItem {
             }
         }
 
+        if (item.getPreview() == null){
+            return;
+        }
+
         // get width and height of image
         Image source = item.getPreview().getImages().get(0);
 
