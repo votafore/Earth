@@ -75,30 +75,23 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-
     // kotlin
     implementation kotlinLibraries.kotlin
-
     // google
     implementation googleLibraries.appcompat
     implementation googleLibraries.recyclerview
     implementation googleLibraries.cardview
     implementation googleLibraries.support
     implementation googleLibraries.design
-
     implementation googleLibraries.constraintLayout
-
     // retrofit
     implementation retrofitLibraries.retrofit
     implementation retrofitLibraries.converter
-
     // glide
     implementation glideLibraries.glide
     annotationProcessor glideLibraries.compiler
-
     // butterKnife
     implementation butterKnifeLibraries.butterknife
     annotationProcessor butterKnifeLibraries.compiler
-
     implementation 'com.github.chrisbanes:PhotoView:+'
 }

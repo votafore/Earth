@@ -1,6 +1,7 @@
 package com.votafore.earthporn.fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.SharedElementCallback;
@@ -19,6 +20,7 @@ import com.votafore.earthporn.ActivityMain;
 import com.votafore.earthporn.R;
 import com.votafore.earthporn.customviews.AutofitRecyclerView;
 import com.votafore.earthporn.utils.DataSet;
+import com.votafore.earthporn.utils.FragmentRouter;
 import com.votafore.earthporn.utils.ImageLoader;
 import com.votafore.earthporn.utils.ImageListAdapter;
 
@@ -35,6 +37,7 @@ public class FragmentList extends Fragment {
     @BindView(R.id.image_list) AutofitRecyclerView imageList;
 
     private ImageLoader imageLoader;
+    private FragmentRouter router;
 
     public static FragmentList newInstance() {
         return new FragmentList();
@@ -53,6 +56,12 @@ public class FragmentList extends Fragment {
         setExitTransition(new Explode().setDuration(getResources().getInteger(R.integer.anim_std_duration)));
 
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        router = ((ActivityMain)context).getRouter();
     }
 
     @Override
@@ -95,16 +104,18 @@ public class FragmentList extends Fragment {
 
             ActivityMain.selectedIndex = position;
 
-            FragmentFullImage pageFullImage = FragmentFullImage.newInstance();
+//            FragmentFullImage pageFullImage = FragmentFullImage.newInstance();
+//
+//            View item = ((ImageListAdapter.ViewHolder)imageList.findViewHolderForAdapterPosition(position)).img;
+//
+//            getFragmentManager().beginTransaction()
+//                    .replace(R.id.pages, pageFullImage)
+//                    .setReorderingAllowed(true)
+//                    .addSharedElement(item, ViewCompat.getTransitionName(item))
+//                    .addToBackStack(pageFullImage.toString())
+//                    .commit();
 
-            View item = ((ImageListAdapter.ViewHolder)imageList.findViewHolderForAdapterPosition(position)).img;
-
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.pages, pageFullImage)
-                    .setReorderingAllowed(true)
-                    .addSharedElement(item, ViewCompat.getTransitionName(item))
-                    .addToBackStack(pageFullImage.toString())
-                    .commit();
+            router.goToFullImageFragment(imageList, position);
         });
 
         setExitSharedElementCallback(new SharedElementCallback() {
