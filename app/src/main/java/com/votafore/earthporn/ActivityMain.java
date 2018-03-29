@@ -1,107 +1,127 @@
 package com.votafore.earthporn;
 
-import android.content.Intent;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.SharedElementCallback;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.votafore.earthporn.utils.DataSet;
+import com.votafore.earthporn.utils.FragmentRouter;
 
-import com.votafore.earthporn.activities.ActivityFullImage;
-import com.votafore.earthporn.activities.ActivityGallery;
-import com.votafore.earthporn.utils.RVAdapter;
+import java.lang.ref.WeakReference;
+import java.util.Random;
 
-import java.util.List;
-import java.util.Map;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-/**
- * @author votarore
- * Created on 21.02.2018.
- */
 
 public class ActivityMain extends AppCompatActivity {
 
-    private RecyclerView imageList;
+    @BindView(R.id.pages)    FrameLayout pages;
+    @BindView(R.id.drawer)   DrawerLayout drawer;
+    @BindView(R.id.nav_view) NavigationView nav_view;
 
-    ImageView imgView;
-    Button btn_getTop;
-    Button btn_getNew;
+    public static int selectedIndex = -1;
+
+    private FragmentRouter router;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final App app = (App) getApplication();
+        ButterKnife.bind(this);
 
-        imageList = findViewById(R.id.image_list);
-        imageList.setItemAnimator(new DefaultItemAnimator());
-        imageList.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        imageList.setAdapter(app.getAdapter());
+        router = new FragmentRouter(getSupportFragmentManager());
 
-        btn_getNew = findViewById(R.id.get_new_images);
-        btn_getNew.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                app.sendRequestForNewImages();
-            }
-        });
+        Toolbar toolbar;
+        ActionBarDrawerToggle toggle;
 
-        btn_getTop = findViewById(R.id.get_top_images);
-        btn_getTop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                app.sendRequestForTopImages();
-            }
-        });
+        toolbar  = findViewById(R.id.toolbar);
 
-        imgView = findViewById(R.id.full_image);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        app.getAdapter().setListener(new RVAdapter.OnItemClickListener() {
-            @Override
-            public void onClick(View item, int position) {
+        toggle = new ActionBarDrawerToggle(this, drawer, toolbar, 0, 0){
 
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ActivityMain.this, item, "Open_img");
+            private ImageView headImg   = nav_view.getHeaderView(0).findViewById(R.id.header_img);
+            private DataSet   dataSet   = DataSet.getInstance();
+            private Random    generator = new Random(System.currentTimeMillis());
 
-                Intent openFullImg = new Intent(ActivityMain.this, ActivityFullImage.class);
-                openFullImg.putExtra("imgIndex", position);
-
-                startActivity(openFullImg, options.toBundle());
-            }
+            private boolean isLoadingAllowed = true;
 
             @Override
-            public void onLongClick(View item, int position) {
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
 
-                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ActivityMain.this, item, "Open_img");
-
-                Intent openFullImg = new Intent(ActivityMain.this, ActivityGallery.class);
-                openFullImg.putExtra("imgIndex", position);
-
-                startActivity(openFullImg, options.toBundle());
-            }
-        });
-
-
-        ActivityCompat.setExitSharedElementCallback(this, new SharedElementCallback() {
-            @Override
-            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-
-                if (ActivityGallery.selectedIndex < 0) {
-                    // When transitioning out, use the view already specified in makeSceneTransition
+                if (!isLoadingAllowed || dataSet.getList().size() == 0){
                     return;
                 }
 
-                // When transitioning back in, use the thumbnail at index the user had swiped to in the pager activity
-                sharedElements.put(names.get(0), ((RVAdapter)imageList.getAdapter()).getViewAtIndex(ActivityGallery.selectedIndex));
-                ActivityGallery.selectedIndex = -1;
+                int listSize = dataSet.getList().size();
+
+                dataSet.getList().get(generator.nextInt(listSize)).setImageToImageView(ActivityMain.this, new WeakReference<>(headImg));
+
+                isLoadingAllowed = false;
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                headImg.setImageBitmap(null);
+                isLoadingAllowed = true;
+            }
+        };
+
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        nav_view.setCheckedItem(R.id.item_main);
+        nav_view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+
+            private int lastSelectedItem = R.id.item_main;
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                drawer.closeDrawers();
+
+                if (lastSelectedItem == item.getItemId()){
+                    return false;
+                }
+
+                lastSelectedItem = item.getItemId();
+
+                item.setChecked(true);
+
+                switch (lastSelectedItem){
+                    case R.id.item_gallery:
+
+                        router.goToGalleryFragment();
+                        return true;
+
+                    case R.id.item_main:
+
+                        router.goToImageListFragment();
+                        return true;
+
+                    default:
+                        return false;
+                }
             }
         });
+
+        router.openImageListFragment();
+    }
+
+    public FragmentRouter getRouter(){
+        return router;
     }
 }

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
-    android:transitionOrdering="together"
-    android:duration="400"
-    android:interpolator="@android:interpolator/accelerate_decelerate">
+<transitionSet
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="@integer/anim_std_duration"
+    android:interpolator="@android:interpolator/accelerate_decelerate"
+    android:transitionOrdering="together">
 
-    <changeImageTransform/>
+    <changeClipBounds/>
+    <changeTransform/>
     <changeBounds/>
 
 </transitionSet>

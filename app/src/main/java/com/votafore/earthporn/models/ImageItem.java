@@ -15,48 +15,45 @@ import com.bumptech.glide.request.transition.Transition;
 
 import java.lang.ref.WeakReference;
 
-/**
- * @author votarore
- * Created on 21.02.2018.
- */
-
 public class ImageItem {
 
     public Bitmap image;
     public Data_ item;
 
-    public void setImageToImageView(Context context, final WeakReference<ImageView> reference){
-        Log.d("NEW_DATA", "setImageToImageView");
+    private int MAX_SIZE = 800;
 
-        reference.get().setImageBitmap(image);
+    public void setImageToImageView(Context context, final WeakReference<ImageView> reference){
 
         if (image != null){
+            if (!image.isRecycled()){
+                reference.get().setImageBitmap(image);
+                return;
+            }
+        }
+
+        if (item.getPreview() == null){
             return;
         }
 
-        // adjust width and height
+        // get width and height of image
         Image source = item.getPreview().getImages().get(0);
 
-        int max_width  = 1300;
-        int max_Height = 1200;
+        int width  = source.getSource().getWidth();
+        int height = source.getSource().getHeight();
 
-        int width = source.getSource().getWidth();
-        int height= source.getSource().getHeight();
-
+        // adjusting width and height in order to reduce size
         float ratio = (float) width / height;
 
         if(width > height){
 
-            width = Math.min(max_width, width);
+            width = Math.min(MAX_SIZE, width);
             height = (int) (width / ratio);
 
         } else {
 
-            height = Math.min(max_Height, height);
+            height = Math.min(MAX_SIZE, height);
             width = (int) (height * ratio);
         }
-
-        Log.d("NEW_DATA", "loadImage");
 
         Glide.with(context)
                 .asBitmap()
@@ -69,7 +66,7 @@ public class ImageItem {
                         image = resource;
 
                         if (reference.get() != null) {
-                            reference.get().setImageBitmap(resource);
+                                reference.get().setImageBitmap(resource);
                         }
                     }
                 });

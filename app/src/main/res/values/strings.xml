@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Earth porn</string>
     <string name="transition_name">Open_img</string>
+
+    <string name="gallery_title">Галерея</string>
+    <string name="main_title">Главная</string>
+
+    <string name="appbar_menu_change_mode">изменить вид</string>
+
 </resources>
