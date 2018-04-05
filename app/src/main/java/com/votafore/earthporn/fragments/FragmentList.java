@@ -45,7 +45,7 @@ public class FragmentList extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        imageLoader = new ImageLoader();
+        imageLoader = new ImageLoader(getContext());
 
         if (savedInstanceState == null && DataSet.getInstance().getList().size() == 0){
             imageLoader.getTopImages();
@@ -63,7 +63,7 @@ public class FragmentList extends Fragment {
 
         postponeEnterTransition();
 
-        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
         ButterKnife.bind(this, rootView);
 
@@ -94,9 +94,17 @@ public class FragmentList extends Fragment {
             }
         });
 
-        adapter.setListener(position -> {
-            ActivityMain.selectedIndex = position;
-            router.goToFullImageFragment(imageList, position);
+//        adapter.setListener(position -> {
+//            ActivityMain.selectedIndex = position;
+//            router.goToFullImageFragment(imageList, position);
+//        });
+
+        adapter.setListener(new ImageListAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(int position) {
+                ActivityMain.selectedIndex = position;
+                router.goToFullImageFragment(imageList, position);
+            }
         });
 
         setExitSharedElementCallback(new SharedElementCallback() {

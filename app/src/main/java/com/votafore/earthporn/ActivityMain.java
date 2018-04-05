@@ -112,6 +112,11 @@ public class ActivityMain extends AppCompatActivity {
                         router.goToImageListFragment();
                         return true;
 
+
+                    case R.id.item_database:
+                        router.goToDataBaseFragment();
+                        return true;
+
                     default:
                         return false;
                 }
