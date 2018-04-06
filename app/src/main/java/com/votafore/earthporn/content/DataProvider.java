@@ -33,12 +33,10 @@ public class DataProvider extends ContentProvider {
         matcher.addURI(authority, path+"/*", URI_IMAGES_ID);
     }
 
-    //private SQLiteOpenHelper helper;
     private DataBaseManager manager;
 
     @Override
     public boolean onCreate() {
-        //helper = new DataBase(getContext());
 
         // TODO: get preferences and get proper data base manager
 
@@ -63,27 +61,7 @@ public class DataProvider extends ContentProvider {
 
         checkCondition(uri, selection);
 
-//        try (SQLiteDatabase db = helper.getReadableDatabase()){
-//
-//            Cursor result = db.query(DataBase.TABLE_NAME_MAIN, projection, selection, selectionArgs, null, null, sortOrder);
-//
-//            // просим ContentResolver уведомлять этот курсор
-//            // об изменениях данных в CONTACT_CONTENT_URI
-//            result.setNotificationUri(getContext().getContentResolver(), BASE_URI);
-//
-//            return result;
-//        }
-
-//        SQLiteDatabase db = helper.getReadableDatabase();
-//
-//        Cursor result = db.query(DataBase.TABLE_NAME_MAIN, projection, selection, selectionArgs, null, null, sortOrder);
-//
-//        // просим ContentResolver уведомлять этот курсор
-//        // об изменениях данных в CONTACT_CONTENT_URI
-//        result.setNotificationUri(getContext().getContentResolver(), BASE_URI);
-
-        List<DataBaseRow> list = manager.getData(uri, projection, selection, selectionArgs, sortOrder);
-
+        List<DataBaseRow> list = manager.getData(projection, selection, selectionArgs, sortOrder);
         MatrixCursor cursor = new MatrixCursor(new String[]{DataBaseManager.COLUMN_ID, DataBaseManager.COLUMN_URL});
 
         for (DataBaseRow row : list){
@@ -97,23 +75,8 @@ public class DataProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-
         checkCondition(uri, selection);
-
-//        try (SQLiteDatabase db = helper.getWritableDatabase()){
-//            int count = db.delete(DataBase.TABLE_NAME_MAIN, selection, selectionArgs);
-//            getContext().getContentResolver().notifyChange(uri, null);
-//            return count;
-//        }
-
-//        SQLiteDatabase db = helper.getWritableDatabase();
-//        int count = db.delete(DataBase.TABLE_NAME_MAIN, selection, selectionArgs);
-//        getContext().getContentResolver().notifyChange(uri, null);
-
-        int count = manager.delete(uri, selection, selectionArgs);
-        getContext().getContentResolver().notifyChange(uri, null);
-
-        return count;
+        return manager.delete(selection, selectionArgs);
     }
 
     @Override
@@ -123,78 +86,20 @@ public class DataProvider extends ContentProvider {
             throw new IllegalArgumentException("Wrong URI: " + uri);
         }
 
-//        try (SQLiteDatabase db = helper.getWritableDatabase()){
-//
-//            String id = values.getAsString(DataBase.COLUMN_ID);
-//
-//            Cursor cursor = db.query(DataBase.TABLE_NAME_MAIN, null, DataBase.COLUMN_ID+"=?", new String[]{id}, null, null, null);
-//
-//            if (cursor.getCount() == 0){
-//                db.insert(DataBase.TABLE_NAME_MAIN, null, values);
-//            }
-//
-//            Uri resultUri = Uri.withAppendedPath(BASE_URI, id);
-//            getContext().getContentResolver().notifyChange(resultUri, null);
-//            return resultUri;
-//        }
-
-
-
-
-//        SQLiteDatabase db = helper.getWritableDatabase();
-//
-//        String id = values.getAsString(DataBase.COLUMN_ID);
-//
-//        Cursor cursor = db.query(DataBase.TABLE_NAME_MAIN, null, DataBase.COLUMN_ID+"=?", new String[]{id}, null, null, null);
-//
-//        if (cursor.getCount() == 0){
-//            db.insert(DataBase.TABLE_NAME_MAIN, null, values);
-//        }
-
-
-
-
-
         String id = values.getAsString(DataBaseManager.COLUMN_ID);
-        List<DataBaseRow> list = manager.getData(uri, null, DataBaseManager.COLUMN_ID+"=?", new String[]{id}, null);
+        List<DataBaseRow> list = manager.getData(null, DataBaseManager.COLUMN_ID+"=?", new String[]{id}, null);
 
         if (list.size() == 0){
             manager.insert(values);
         }
 
-
-
-
-        Uri resultUri = Uri.withAppendedPath(BASE_URI, id);
-        getContext().getContentResolver().notifyChange(resultUri, null);
-
-        return resultUri;
+        return Uri.withAppendedPath(BASE_URI, id);
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-
         checkCondition(uri, selection);
-
-//        try (SQLiteDatabase db = helper.getWritableDatabase()){
-//            int count = db.update(DataBase.TABLE_NAME_MAIN, values, selection, selectionArgs);
-//            getContext().getContentResolver().notifyChange(uri, null);
-//            return count;
-//        }
-
-//        SQLiteDatabase db = helper.getWritableDatabase();
-//
-//        int count = db.update(DataBase.TABLE_NAME_MAIN, values, selection, selectionArgs);
-//        getContext().getContentResolver().notifyChange(uri, null);
-
-
-
-
-
-        int count = manager.update(uri, values, selection, selectionArgs);
-        getContext().getContentResolver().notifyChange(uri, null);
-
-        return count;
+        return manager.update(values, selection, selectionArgs);
     }
 
 

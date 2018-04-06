@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
 
 import com.votafore.earthporn.models.DataBaseRow;
 
@@ -15,34 +14,34 @@ import java.util.List;
 public class DataBaseManagerSQLite extends DataBaseManager {
 
     private SQLiteOpenHelper helper;
-    private Context context;
 
     public DataBaseManagerSQLite(Context context){
-        this.context = context;
         helper = new DataBase(context);
     }
 
     @Override
-    public List<DataBaseRow> getData(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public List<DataBaseRow> getData(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
         List<DataBaseRow> result = new ArrayList<>();
 
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor cursor = db.query(TABLE_NAME_MAIN, projection, selection, selectionArgs, null, null, sortOrder);
 
-        cursor.moveToFirst();
+        if (cursor.moveToFirst()){
 
-        do {
+            do {
 
-            DataBaseRow row = new DataBaseRow();
-            row.id = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
-            row.url = cursor.getString(cursor.getColumnIndex(COLUMN_URL));
+                DataBaseRow row = new DataBaseRow();
+                row.id = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
+                row.url = cursor.getString(cursor.getColumnIndex(COLUMN_URL));
 
-            result.add(row);
+                result.add(row);
 
-            cursor.moveToNext();
+                cursor.moveToNext();
 
-        } while (!cursor.isAfterLast());
+            } while (!cursor.isAfterLast());
+
+        }
 
         return result;
     }
@@ -54,35 +53,21 @@ public class DataBaseManagerSQLite extends DataBaseManager {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-
+    public int update(ContentValues values, String selection, String[] selectionArgs) {
         SQLiteDatabase db = helper.getWritableDatabase();
-
-        //int count = db.update(TABLE_NAME_MAIN, values, selection, selectionArgs);
-
         return db.update(TABLE_NAME_MAIN, values, selection, selectionArgs);
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
-
+    public int delete(String selection, String[] selectionArgs) {
         SQLiteDatabase db = helper.getWritableDatabase();
         int count = db.delete(TABLE_NAME_MAIN, selection, selectionArgs);
-        context.getContentResolver().notifyChange(uri, null);
-
         return count;
     }
 
 
-    /************* DATABASE **************/
 
-//    public static String TABLE_NAME_MAIN = "main";
-//
-//    private static String NAME = "DataBase.db";
-//    private static int VERSION = 2;
-//
-//    public static String COLUMN_ID  = "_id";
-//    public static String COLUMN_URL = "_url";
+    /************* DATABASE **************/
 
     public class DataBase extends SQLiteOpenHelper {
 
