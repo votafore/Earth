@@ -1,5 +1,7 @@
 package com.votafore.earthporn;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -7,11 +9,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.votafore.earthporn.content.DataProvider;
 import com.votafore.earthporn.utils.DataSet;
 import com.votafore.earthporn.utils.FragmentRouter;
 
@@ -128,5 +133,58 @@ public class ActivityMain extends AppCompatActivity {
 
     public FragmentRouter getRouter(){
         return router;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_menu, menu);
+
+        SharedPreferences preferences = getSharedPreferences(getResources().getString(R.string.shared_preferences_file_name), Context.MODE_PRIVATE);
+
+        int type = preferences.getInt(getResources().getString(R.string.shared_preferences_database_type), DataProvider.DATABASE_TYPE_SQL);
+
+        switch (type) {
+            case DataProvider.DATABASE_TYPE_SQL:
+                menu.findItem(R.id.item_sql).setChecked(true);
+                break;
+            case DataProvider.DATABASE_TYPE_REALM:
+                menu.findItem(R.id.item_realm).setChecked(true);
+                break;
+            case DataProvider.DATABASE_TYPE_ROOM:
+                menu.findItem(R.id.item_room).setChecked(true);
+                break;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        SharedPreferences preferences = getSharedPreferences(getResources().getString(R.string.shared_preferences_file_name), Context.MODE_PRIVATE);
+
+        item.setChecked(true);
+
+        switch (item.getItemId()){
+            case R.id.item_sql:
+                preferences.edit()
+                        .putInt(getResources().getString(R.string.shared_preferences_database_type), DataProvider.DATABASE_TYPE_SQL)
+                        .apply();
+                break;
+            case R.id.item_realm:
+                preferences.edit()
+                        .putInt(getResources().getString(R.string.shared_preferences_database_type), DataProvider.DATABASE_TYPE_REALM)
+                        .apply();
+                break;
+            case R.id.item_room:
+                preferences.edit()
+                        .putInt(getResources().getString(R.string.shared_preferences_database_type), DataProvider.DATABASE_TYPE_ROOM)
+                        .apply();
+                break;
+        }
+
+        Toast.makeText(this, "application must be restarted", Toast.LENGTH_SHORT).show();
+
+        return super.onOptionsItemSelected(item);
     }
 }

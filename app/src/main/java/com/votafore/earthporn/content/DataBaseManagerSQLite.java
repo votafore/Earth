@@ -20,30 +20,30 @@ public class DataBaseManagerSQLite extends DataBaseManager {
     }
 
     @Override
-    public List<DataBaseRow> getData(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor getData(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
-        List<DataBaseRow> result = new ArrayList<>();
+//        List<DataBaseRow> result = new ArrayList<>();
 
         SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NAME_MAIN, projection, selection, selectionArgs, null, null, sortOrder);
+//        Cursor cursor = db.query(TABLE_NAME_MAIN, projection, selection, selectionArgs, null, null, sortOrder);
+//
+//        if (cursor.moveToFirst()){
+//
+//            do {
+//
+//                DataBaseRow row = new DataBaseRow();
+//                row.id = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
+//                row.url = cursor.getString(cursor.getColumnIndex(COLUMN_URL));
+//
+//                result.add(row);
+//
+//                cursor.moveToNext();
+//
+//            } while (!cursor.isAfterLast());
+//
+//        }
 
-        if (cursor.moveToFirst()){
-
-            do {
-
-                DataBaseRow row = new DataBaseRow();
-                row.id = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
-                row.url = cursor.getString(cursor.getColumnIndex(COLUMN_URL));
-
-                result.add(row);
-
-                cursor.moveToNext();
-
-            } while (!cursor.isAfterLast());
-
-        }
-
-        return result;
+        return db.query(TABLE_NAME_MAIN, projection, selection, selectionArgs, null, null, sortOrder);
     }
 
     @Override

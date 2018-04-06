@@ -2,15 +2,25 @@ package com.votafore.earthporn.content;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.support.annotation.IntDef;
 import android.text.TextUtils;
+import android.widget.Toast;
 
+import com.votafore.earthporn.R;
 import com.votafore.earthporn.models.DataBaseRow;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
+
+import butterknife.BindString;
 
 public class DataProvider extends ContentProvider {
 
@@ -27,6 +37,14 @@ public class DataProvider extends ContentProvider {
 
     public static Uri BASE_URI = Uri.parse("content://"+ authority +"/"+path);
 
+    @IntDef({DATABASE_TYPE_SQL, DATABASE_TYPE_REALM, DATABASE_TYPE_ROOM})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface DataBaseType{}
+
+    public static final int DATABASE_TYPE_SQL   = 1;
+    public static final int DATABASE_TYPE_REALM = 2;
+    public static final int DATABASE_TYPE_ROOM  = 3;
+
     static {
         matcher = new UriMatcher(UriMatcher.NO_MATCH);
         matcher.addURI(authority, path, URI_IMAGES);
@@ -38,9 +56,30 @@ public class DataProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
 
-        // TODO: get preferences and get proper data base manager
+        SharedPreferences preferences = getContext().getSharedPreferences(getContext().getResources().getString(R.string.shared_preferences_file_name), Context.MODE_PRIVATE);
 
-        manager = new DataBaseManagerSQLite(getContext());
+        try {
+
+            int type = preferences.getInt(getContext().getResources().getString(R.string.shared_preferences_database_type), DATABASE_TYPE_SQL);
+
+            switch (type) {
+                case DATABASE_TYPE_SQL:
+                    Toast.makeText(getContext(), "current database manager supported ;)", Toast.LENGTH_SHORT).show();
+                    break;
+                case DATABASE_TYPE_REALM:
+                    Toast.makeText(getContext(), "current database manager NOT supported yet", Toast.LENGTH_SHORT).show();
+                    break;
+                case DATABASE_TYPE_ROOM:
+                    Toast.makeText(getContext(), "current database manager NOT supported yet", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+
+            manager = new DataBaseManagerSQLite(getContext());
+
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            manager = new DataBaseManagerSQLite(getContext());
+        }
 
         return false;
     }
@@ -61,16 +100,16 @@ public class DataProvider extends ContentProvider {
 
         checkCondition(uri, selection);
 
-        List<DataBaseRow> list = manager.getData(projection, selection, selectionArgs, sortOrder);
-        MatrixCursor cursor = new MatrixCursor(new String[]{DataBaseManager.COLUMN_ID, DataBaseManager.COLUMN_URL});
+//        List<DataBaseRow> list = manager.getData(projection, selection, selectionArgs, sortOrder);
+//        MatrixCursor cursor = new MatrixCursor(new String[]{DataBaseManager.COLUMN_ID, DataBaseManager.COLUMN_URL});
+//
+//        for (DataBaseRow row : list){
+//            cursor.newRow()
+//                    .add(DataBaseManager.COLUMN_ID, row.id)
+//                    .add(DataBaseManager.COLUMN_URL, row.url);
+//        }
 
-        for (DataBaseRow row : list){
-            cursor.newRow()
-                    .add(DataBaseManager.COLUMN_ID, row.id)
-                    .add(DataBaseManager.COLUMN_URL, row.url);
-        }
-
-        return cursor;
+        return manager.getData(projection, selection, selectionArgs, sortOrder);
     }
 
     @Override
@@ -87,9 +126,9 @@ public class DataProvider extends ContentProvider {
         }
 
         String id = values.getAsString(DataBaseManager.COLUMN_ID);
-        List<DataBaseRow> list = manager.getData(null, DataBaseManager.COLUMN_ID+"=?", new String[]{id}, null);
+        Cursor cursor = manager.getData(null, DataBaseManager.COLUMN_ID+"=?", new String[]{id}, null);
 
-        if (list.size() == 0){
+        if (cursor.getCount() == 0){
             manager.insert(values);
         }
 
@@ -120,4 +159,5 @@ public class DataProvider extends ContentProvider {
                 throw new IllegalArgumentException("Wrong URI: " + uri);
         }
     }
+
 }
