@@ -1,10 +1,22 @@
 <resources>
     <string name="app_name">Earth porn</string>
-    <string name="transition_name">Open_img</string>
 
     <string name="gallery_title">Галерея</string>
     <string name="main_title">Главная</string>
 
     <string name="appbar_menu_change_mode">изменить вид</string>
+
+
+    <!-- activity menu -->
+    <string name="use_sql">use SQL</string>
+    <string name="use_room">use ROOM</string>
+    <string name="use_realm">use Realm</string>
+
+
+
+    <!-- SHARED PREFERENCES -->
+    <string name="shared_preferences_file_name">settings</string>
+
+    <string name="shared_preferences_database_type">database_type</string>
 
 </resources>
