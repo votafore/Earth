@@ -6,21 +6,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.MatrixCursor;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
 import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.votafore.earthporn.R;
-import com.votafore.earthporn.models.DataBaseRow;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.List;
 
-import butterknife.BindString;
 
 public class DataProvider extends ContentProvider {
 
@@ -97,18 +92,7 @@ public class DataProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-
         checkCondition(uri, selection);
-
-//        List<DataBaseRow> list = manager.getData(projection, selection, selectionArgs, sortOrder);
-//        MatrixCursor cursor = new MatrixCursor(new String[]{DataBaseManager.COLUMN_ID, DataBaseManager.COLUMN_URL});
-//
-//        for (DataBaseRow row : list){
-//            cursor.newRow()
-//                    .add(DataBaseManager.COLUMN_ID, row.id)
-//                    .add(DataBaseManager.COLUMN_URL, row.url);
-//        }
-
         return manager.getData(projection, selection, selectionArgs, sortOrder);
     }
 
@@ -150,9 +134,9 @@ public class DataProvider extends ContentProvider {
             case URI_IMAGES_ID:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)){
-                    selection = DataBase.COLUMN_ID+"="+id;
+                    selection = DataBaseManager.COLUMN_ID+"="+id;
                 } else {
-                    selection = selection + " AND " + DataBase.COLUMN_ID + "=" + id;
+                    selection = selection + " AND " + DataBaseManager.COLUMN_ID + "=" + id;
                 }
                 break;
             default:

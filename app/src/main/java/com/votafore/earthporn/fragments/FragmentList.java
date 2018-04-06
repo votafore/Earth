@@ -94,11 +94,6 @@ public class FragmentList extends Fragment {
             }
         });
 
-//        adapter.setListener(position -> {
-//            ActivityMain.selectedIndex = position;
-//            router.goToFullImageFragment(imageList, position);
-//        });
-
         adapter.setListener(new ImageListAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position) {

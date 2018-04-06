@@ -3,9 +3,8 @@ package com.votafore.earthporn.utils;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.net.Uri;
 
-import com.votafore.earthporn.content.DataBase;
+import com.votafore.earthporn.content.DataBaseManager;
 import com.votafore.earthporn.content.DataProvider;
 import com.votafore.earthporn.helpers.ServiceEarthPorn;
 import com.votafore.earthporn.models.Child;
@@ -46,8 +45,8 @@ public class ImageLoader{
                     mListOfImages.add(img);
 
                     ContentValues values = new ContentValues();
-                    values.put(DataBase.COLUMN_ID, img.item.getId());
-                    values.put(DataBase.COLUMN_URL, img.item.getUrl());
+                    values.put(DataBaseManager.COLUMN_ID, img.item.getId());
+                    values.put(DataBaseManager.COLUMN_URL, img.item.getUrl());
 
                     resolver.insert(DataProvider.BASE_URI, values);
                 }

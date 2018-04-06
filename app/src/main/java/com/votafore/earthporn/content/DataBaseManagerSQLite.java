@@ -6,11 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.votafore.earthporn.models.DataBaseRow;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class DataBaseManagerSQLite extends DataBaseManager {
 
     private SQLiteOpenHelper helper;
@@ -21,28 +16,7 @@ public class DataBaseManagerSQLite extends DataBaseManager {
 
     @Override
     public Cursor getData(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-
-//        List<DataBaseRow> result = new ArrayList<>();
-
         SQLiteDatabase db = helper.getReadableDatabase();
-//        Cursor cursor = db.query(TABLE_NAME_MAIN, projection, selection, selectionArgs, null, null, sortOrder);
-//
-//        if (cursor.moveToFirst()){
-//
-//            do {
-//
-//                DataBaseRow row = new DataBaseRow();
-//                row.id = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
-//                row.url = cursor.getString(cursor.getColumnIndex(COLUMN_URL));
-//
-//                result.add(row);
-//
-//                cursor.moveToNext();
-//
-//            } while (!cursor.isAfterLast());
-//
-//        }
-
         return db.query(TABLE_NAME_MAIN, projection, selection, selectionArgs, null, null, sortOrder);
     }
 

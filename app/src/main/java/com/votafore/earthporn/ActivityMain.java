@@ -36,6 +36,7 @@ public class ActivityMain extends AppCompatActivity {
     public static int selectedIndex = -1;
 
     private FragmentRouter router;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,8 @@ public class ActivityMain extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+
+        preferences = getSharedPreferences(getResources().getString(R.string.shared_preferences_file_name), Context.MODE_PRIVATE);
 
         router = new FragmentRouter(getSupportFragmentManager());
 
@@ -139,8 +142,6 @@ public class ActivityMain extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_menu, menu);
 
-        SharedPreferences preferences = getSharedPreferences(getResources().getString(R.string.shared_preferences_file_name), Context.MODE_PRIVATE);
-
         int type = preferences.getInt(getResources().getString(R.string.shared_preferences_database_type), DataProvider.DATABASE_TYPE_SQL);
 
         switch (type) {
@@ -160,8 +161,6 @@ public class ActivityMain extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        SharedPreferences preferences = getSharedPreferences(getResources().getString(R.string.shared_preferences_file_name), Context.MODE_PRIVATE);
 
         item.setChecked(true);
 
