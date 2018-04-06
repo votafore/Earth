@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/item_sql"
+            android:title="@string/use_sql" />
+        <item
+            android:id="@+id/item_realm"
+            android:title="@string/use_realm" />
+        <item
+            android:id="@+id/item_room"
+            android:title="@string/use_room" />
+    </group>
+</menu>

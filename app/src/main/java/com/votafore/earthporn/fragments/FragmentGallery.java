@@ -32,11 +32,11 @@ public class FragmentGallery extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_gallery, container, false);
 
-        GalleryAdapter adapter = new GalleryAdapter();
+        final GalleryAdapter adapter = new GalleryAdapter();
 
         getLifecycle().addObserver(adapter);
 
-        ViewPager pager = v.findViewById(R.id.gallery_pager);
+        final ViewPager pager = v.findViewById(R.id.gallery_pager);
         pager.setAdapter(adapter);
         pager.setCurrentItem(ActivityMain.selectedIndex);
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {

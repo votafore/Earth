@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.votafore.earthporn.ActivityMain;
 import com.votafore.earthporn.R;
+import com.votafore.earthporn.fragments.FragmentDataBase;
 import com.votafore.earthporn.fragments.FragmentFullImage;
 import com.votafore.earthporn.fragments.FragmentGallery;
 import com.votafore.earthporn.fragments.FragmentList;
@@ -61,19 +62,40 @@ public class FragmentRouter {
 
     public void goToGalleryFragment(){
 
-        FragmentList fragmentList = (FragmentList) fragmentManager.findFragmentById(fragmentContainer);
+        try {
+            FragmentList fragmentList = (FragmentList) fragmentManager.findFragmentById(fragmentContainer);
 
-        RecyclerView rv_view = fragmentList.getView().findViewById(R.id.image_list);
-        GridLayoutManager layoutManager = (GridLayoutManager) rv_view.getLayoutManager();
+            RecyclerView rv_view = fragmentList.getView().findViewById(R.id.image_list);
+            GridLayoutManager layoutManager = (GridLayoutManager) rv_view.getLayoutManager();
 
-        ActivityMain.selectedIndex = layoutManager.findFirstCompletelyVisibleItemPosition();
+            ActivityMain.selectedIndex = layoutManager.findFirstCompletelyVisibleItemPosition();
 
-        View itemView = layoutManager.findViewByPosition(ActivityMain.selectedIndex).findViewById(R.id.img);
+            View itemView = layoutManager.findViewByPosition(ActivityMain.selectedIndex).findViewById(R.id.img);
+
+            fragmentManager.beginTransaction()
+                    .replace(fragmentContainer, FragmentGallery.newInstance())
+                    .setReorderingAllowed(true)
+                    .addSharedElement(itemView, ViewCompat.getTransitionName(itemView))
+                    .commit();
+
+        } catch (ClassCastException e) {
+
+            fragmentManager.beginTransaction()
+                    .replace(fragmentContainer, FragmentGallery.newInstance())
+                    .commit();
+
+            return;
+        }
+    }
+
+
+
+
+
+    public void goToDataBaseFragment(){
 
         fragmentManager.beginTransaction()
-                .replace(fragmentContainer, FragmentGallery.newInstance())
-                .setReorderingAllowed(true)
-                .addSharedElement(itemView, ViewCompat.getTransitionName(itemView))
+                .replace(fragmentContainer, FragmentDataBase.newInstance())
                 .commit();
     }
 }
