@@ -14,6 +14,7 @@ import com.votafore.earthporn.fragments.FragmentDataBase;
 import com.votafore.earthporn.fragments.FragmentFullImage;
 import com.votafore.earthporn.fragments.FragmentGallery;
 import com.votafore.earthporn.fragments.FragmentList;
+import com.votafore.earthporn.fragments.FragmentService;
 
 public class FragmentRouter {
 
@@ -96,6 +97,13 @@ public class FragmentRouter {
 
         fragmentManager.beginTransaction()
                 .replace(fragmentContainer, FragmentDataBase.newInstance())
+                .commit();
+    }
+
+    public void goToServiceFragment(){
+
+        fragmentManager.beginTransaction()
+                .replace(fragmentContainer, FragmentService.newInstance())
                 .commit();
     }
 }

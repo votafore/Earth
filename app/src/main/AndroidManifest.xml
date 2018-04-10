@@ -25,6 +25,10 @@
             android:enabled="true"
             android:exported="false" />
 
+        <service
+            android:name=".utils.LoadService"
+            android:enabled="true"
+            android:exported="false"></service>
     </application>
 
 </manifest>

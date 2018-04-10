@@ -125,6 +125,10 @@ public class ActivityMain extends AppCompatActivity {
                         router.goToDataBaseFragment();
                         return true;
 
+                    case R.id.item_service:
+                        router.goToServiceFragment();
+                        return true;
+
                     default:
                         return false;
                 }
