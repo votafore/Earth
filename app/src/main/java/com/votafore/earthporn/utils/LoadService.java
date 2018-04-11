@@ -1,84 +1,126 @@
 package com.votafore.earthporn.utils;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.HandlerThread;
+import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
+import android.os.ResultReceiver;
 
-import android.os.Process;
-import android.util.Log;
+import com.votafore.earthporn.ActivityMain;
 
 public class LoadService extends Service {
 
-    private String TAG = "ServiceTest";
+    public static final String KEY_RECEIVER        = "receiver";
+    public static final String KEY_STARTLOADING    = "startLoading";
+    public static final String KEY_OPENSERVICEPAGE = "openServicePage";
 
-    private HandlerThread workerThread;
-    private LoadingHandler handler;
+    private int notificationID = 120;
+    private boolean isLoadingStarted = false;
+
+    private ResultReceiver clientReceiver;
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, final int startId) {
+
+        if (intent == null)
+            return START_NOT_STICKY;
+
+        clientReceiver = intent.getParcelableExtra(KEY_RECEIVER);
+
+        if(intent.getBooleanExtra(KEY_STARTLOADING, false)){
+            startLoading();
+        }
+
+        if (isLoadingStarted){
+
+            Bundle args = new Bundle();
+            args.putInt(DataLoader.KEY_MAXVALUE, loader.getSize());
+            args.putInt(DataLoader.KEY_PROGRESS, loader.getProgress());
+
+            clientReceiver.send(0, args);
+        }
+
+        return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopForeground(true);
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    /************** utils *****************/
 
-        Log.d(TAG, "onCreate");
+    DataLoader loader;
 
-        workerThread = new HandlerThread("worker thread", Process.THREAD_PRIORITY_BACKGROUND);
-        workerThread.start();
+    public void startLoading(){
 
-        handler = new LoadingHandler(workerThread.getLooper());
-    }
+        if (isLoadingStarted)
+            return;
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+        loader = new DataLoader();
 
-        Log.d(TAG, "onStartCommand");
+        Intent startActivity = new Intent(getApplicationContext(), ActivityMain.class);
+        startActivity.putExtra(KEY_OPENSERVICEPAGE, true);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, startActivity, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        handler.sendMessage(handler.obtainMessage(0, startId, 0));
+        final NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        return START_NOT_STICKY;
-    }
+        final Notification.Builder builder = new Notification.Builder(getApplicationContext())
+                .setAutoCancel(false)
+                .setSmallIcon(android.R.drawable.ic_input_add)
+                .setContentTitle("loading")
+                .setContentText("file loading started")
+                .setOngoing(true)
+                .setContentIntent(pendingIntent)
+                .setWhen(System.currentTimeMillis());
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy");
-        workerThread.quitSafely();
-    }
+        loader.setTarget();
 
-    public class LoadingHandler extends Handler{
+        Bundle args = new Bundle();
+        args.putInt(DataLoader.KEY_MAXVALUE, loader.getSize());
+        args.putInt(DataLoader.KEY_PROGRESS, loader.getProgress());
 
-        public LoadingHandler(Looper looper){
-            super(looper);
-            Log.d(TAG, "MessageHandler: constructor");
-        }
+        clientReceiver.send(0, args);
 
-        @Override
-        public void handleMessage(Message msg) {
+        loader.addListener(new DataLoader.LoadingListener() {
 
-            Log.d(TAG, "MessageHandler: handleMessage: start");
-
-            long time = System.currentTimeMillis() + 5*1000;
-
-            while (time > System.currentTimeMillis()){
-                synchronized (this){
-                    try{
-                        Thread.sleep(time - System.currentTimeMillis());
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+            @Override
+            public void onLoadingStarted(int size) {
+                isLoadingStarted = true;
+                builder.setProgress(0,0, false);
+                startForeground(notificationID, builder.build());
             }
 
-            Log.d(TAG, "MessageHandler: handleMessage: end");
+            @Override
+            public void onLoadingFinished() {
+                isLoadingStarted = false;
+                manager.cancel(notificationID);
+                stopSelf();
+                loader = null;
+            }
 
-            stopSelf(msg.arg1);
-        }
+            @Override
+            public void onProgress(int progress, int size) {
+                builder.setProgress(size, progress, false);
+                manager.notify(notificationID, builder.build());
+
+                Bundle args = new Bundle();
+                args.putInt(DataLoader.KEY_PROGRESS, progress);
+
+                clientReceiver.send(0, args);
+            }
+        });
+
+        loader.load();
     }
 }

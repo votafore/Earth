@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.votafore.earthporn.content.DataProvider;
 import com.votafore.earthporn.utils.DataSet;
 import com.votafore.earthporn.utils.FragmentRouter;
+import com.votafore.earthporn.utils.LoadService;
 
 import java.lang.ref.WeakReference;
 import java.util.Random;
@@ -92,7 +93,8 @@ public class ActivityMain extends AppCompatActivity {
         toggle.syncState();
 
         nav_view.setCheckedItem(R.id.item_main);
-        nav_view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+
+        NavigationView.OnNavigationItemSelectedListener drawerListener = new NavigationView.OnNavigationItemSelectedListener() {
 
             private int lastSelectedItem = R.id.item_main;
 
@@ -133,9 +135,15 @@ public class ActivityMain extends AppCompatActivity {
                         return false;
                 }
             }
-        });
+        };
 
-        router.openImageListFragment();
+        nav_view.setNavigationItemSelectedListener(drawerListener);
+
+        if (getIntent().getBooleanExtra(LoadService.KEY_OPENSERVICEPAGE, false)){
+            drawerListener.onNavigationItemSelected(nav_view.getMenu().findItem(R.id.item_service));
+        } else {
+            router.openImageListFragment();
+        }
     }
 
     public FragmentRouter getRouter(){
