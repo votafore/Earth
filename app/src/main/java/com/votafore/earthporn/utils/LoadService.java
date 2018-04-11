@@ -1,11 +1,13 @@
 package com.votafore.earthporn.utils;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.ResultReceiver;
@@ -81,8 +83,21 @@ public class LoadService extends Service {
                 .setContentTitle("loading")
                 .setContentText("file loading started")
                 .setOngoing(true)
+                .setOnlyAlertOnce(true)
                 .setContentIntent(pendingIntent)
                 .setWhen(System.currentTimeMillis());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+
+            String channelID = "LoadService";
+            String channelName = "Loading service channel";
+
+            NotificationChannel channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_NONE);
+            channel.setSound(null, null);
+            manager.createNotificationChannel(channel);
+
+            builder.setChannelId(channelID);
+        }
 
         loader.setTarget();
 
