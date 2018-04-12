@@ -25,6 +25,21 @@ public class LoadService extends Service {
 
     private ResultReceiver clientReceiver;
 
+    public static void connectToService(Context context, ResultReceiver receiver){
+        startService(context, receiver, false);
+    }
+
+    public static void startLoading(Context context, ResultReceiver receiver){
+        startService(context, receiver, true);
+    }
+
+    private static void startService(Context context, ResultReceiver receiver, boolean startLoading){
+        Intent start = new Intent(context, LoadService.class);
+        start.putExtra(KEY_RECEIVER, receiver);
+        start.putExtra(KEY_STARTLOADING, startLoading);
+        context.startService(start);
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
 
@@ -34,7 +49,7 @@ public class LoadService extends Service {
         clientReceiver = intent.getParcelableExtra(KEY_RECEIVER);
 
         if(intent.getBooleanExtra(KEY_STARTLOADING, false)){
-            startLoading();
+            loadData();
         }
 
         if (isLoadingStarted){
@@ -64,7 +79,7 @@ public class LoadService extends Service {
 
     DataLoader loader;
 
-    public void startLoading(){
+    public void loadData(){
 
         if (isLoadingStarted)
             return;
