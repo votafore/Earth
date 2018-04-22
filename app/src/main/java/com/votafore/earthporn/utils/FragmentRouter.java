@@ -63,8 +63,11 @@ public class FragmentRouter {
 
     public void goToGalleryFragment(){
 
-        try {
-            FragmentList fragmentList = (FragmentList) fragmentManager.findFragmentById(fragmentContainer);
+        Fragment currentFragment = fragmentManager.findFragmentById(fragmentContainer);
+
+        if (currentFragment instanceof FragmentList) {
+
+            FragmentList fragmentList = (FragmentList)currentFragment;
 
             RecyclerView rv_view = fragmentList.getView().findViewById(R.id.image_list);
             GridLayoutManager layoutManager = (GridLayoutManager) rv_view.getLayoutManager();
@@ -79,13 +82,11 @@ public class FragmentRouter {
                     .addSharedElement(itemView, ViewCompat.getTransitionName(itemView))
                     .commit();
 
-        } catch (ClassCastException e) {
+        } else {
 
             fragmentManager.beginTransaction()
                     .replace(fragmentContainer, FragmentGallery.newInstance())
                     .commit();
-
-            return;
         }
     }
 
