@@ -11,10 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+
         <activity android:name=".ActivityMain">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -24,6 +24,12 @@
             android:authorities="com.earthporn.provider.content"
             android:enabled="true"
             android:exported="false" />
+
+        <service
+            android:name=".utils.LoadService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":new_process"/>
 
     </application>
 
