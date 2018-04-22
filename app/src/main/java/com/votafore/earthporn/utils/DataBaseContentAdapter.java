@@ -15,7 +15,7 @@ import com.votafore.earthporn.content.DataProvider;
 
 public class DataBaseContentAdapter extends BaseAdapter {
 
-    Cursor data;
+    private Cursor data;
 
     public DataBaseContentAdapter(Context context){
         data = context.getContentResolver().query(DataProvider.BASE_URI, null, null, null, null);
