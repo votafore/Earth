@@ -20,7 +20,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            applicationVariants.all {variant ->
+            applicationVariants.all { variant ->
                 renameAPK(variant, defaultConfig, 'release')
             }
         }
@@ -46,9 +46,9 @@ android {
 //    }
 }
 
-def renameAPK(variant, defaultConfig, buildType){
+def renameAPK(variant, defaultConfig, buildType) {
     variant.outputs.all { output ->
-        outputFileName  = "Earth porn - " + buildType + " v" + defaultConfig.versionName + ".apk"
+        outputFileName = "Earth porn - " + buildType + " v" + defaultConfig.versionName + ".apk"
     }
 }
 

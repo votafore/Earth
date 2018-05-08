@@ -131,6 +131,10 @@ public class ActivityMain extends AppCompatActivity {
                         router.goToServiceFragment();
                         return true;
 
+                    case R.id.item_broadcast:
+                        router.goToBroadcastFragment();
+                        return true;
+
                     default:
                         return false;
                 }

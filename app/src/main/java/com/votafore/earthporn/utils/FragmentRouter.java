@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.votafore.earthporn.ActivityMain;
 import com.votafore.earthporn.R;
+import com.votafore.earthporn.fragments.FragmentBroadcast;
 import com.votafore.earthporn.fragments.FragmentDataBase;
 import com.votafore.earthporn.fragments.FragmentFullImage;
 import com.votafore.earthporn.fragments.FragmentGallery;
@@ -105,6 +106,13 @@ public class FragmentRouter {
 
         fragmentManager.beginTransaction()
                 .replace(fragmentContainer, FragmentService.newInstance())
+                .commit();
+    }
+
+    public void goToBroadcastFragment(){
+
+        fragmentManager.beginTransaction()
+                .replace(fragmentContainer, FragmentBroadcast.newInstance())
                 .commit();
     }
 }
