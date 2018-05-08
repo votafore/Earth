@@ -12,6 +12,7 @@ import com.votafore.earthporn.ActivityMain;
 import com.votafore.earthporn.R;
 import com.votafore.earthporn.fragments.FragmentBroadcast;
 import com.votafore.earthporn.fragments.FragmentDataBase;
+import com.votafore.earthporn.fragments.FragmentDialog;
 import com.votafore.earthporn.fragments.FragmentFullImage;
 import com.votafore.earthporn.fragments.FragmentGallery;
 import com.votafore.earthporn.fragments.FragmentList;
@@ -113,6 +114,13 @@ public class FragmentRouter {
 
         fragmentManager.beginTransaction()
                 .replace(fragmentContainer, FragmentBroadcast.newInstance())
+                .commit();
+    }
+
+    public void goToDialogFragment() {
+
+        fragmentManager.beginTransaction()
+                .replace(fragmentContainer, FragmentDialog.newInstance())
                 .commit();
     }
 }

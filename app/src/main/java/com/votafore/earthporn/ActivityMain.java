@@ -135,6 +135,11 @@ public class ActivityMain extends AppCompatActivity {
                         router.goToBroadcastFragment();
                         return true;
 
+                    case R.id.item_dialogs:
+                        router.goToDialogFragment();
+                        return true;
+
+
                     default:
                         return false;
                 }
