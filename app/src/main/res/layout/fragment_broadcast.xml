@@ -1,63 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.FragmentBroadcast">
 
-    <LinearLayout
-        android:id="@+id/result_content"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/text_result1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:text="Broadcast 1: "
+        android:layout_margin="4dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/result1"/>
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/result1"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:layout_margin="4dp"
+        app:layout_constraintStart_toEndOf="@id/text_result1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="25sp"
-                android:text="Broadcast 1: "/>
+    <TextView
+        android:id="@+id/text_result2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:text="Broadcast 2: "
+        android:layout_margin="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_result1"
+        app:layout_constraintEnd_toStartOf="@id/result2"/>
 
-            <TextView
-                android:id="@+id/result1"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:textSize="25sp"
-                android:gravity="center"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="25sp"
-                android:text="Broadcast 2: "/>
-
-            <TextView
-                android:id="@+id/result2"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:textSize="25sp"
-                android:gravity="center"
-                tools:text="test"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/result2"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:gravity="center"
+        tools:text="test"
+        android:layout_margin="4dp"
+        app:layout_constraintStart_toEndOf="@id/text_result2"
+        app:layout_constraintTop_toBottomOf="@id/result1"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <Switch
         android:id="@+id/switcher"
@@ -69,7 +64,7 @@
         android:text="очистить результат после первой обработки "
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/result_content" />
+        app:layout_constraintTop_toBottomOf="@id/result2" />
 
     <Button
         android:id="@+id/send_broadcast"

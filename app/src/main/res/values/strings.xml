@@ -17,7 +17,4 @@
     <string name="shared_preferences_file_name">settings</string>
     <string name="shared_preferences_database_type">database_type</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 </resources>

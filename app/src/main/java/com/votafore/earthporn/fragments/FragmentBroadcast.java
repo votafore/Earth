@@ -55,7 +55,7 @@ public class FragmentBroadcast extends Fragment {
                 result1.setText(result);
 
                 if (switcher.isChecked()){
-                    args.putString(KEY_DATA, null);
+                    args.putString(KEY_DATA, "");
                 } else {
                     args.putString(KEY_DATA, result);
                 }
@@ -126,7 +126,7 @@ public class FragmentBroadcast extends Fragment {
 
         switcher = root.findViewById(R.id.switcher);
 
-        Button sendBroadcast        = root.findViewById(R.id.send_broadcast);
+        Button sendBroadcast = root.findViewById(R.id.send_broadcast);
         Button sendOrderedBroadcast = root.findViewById(R.id.send_ordered_broadcast);
 
         sendBroadcast.setOnClickListener(new View.OnClickListener() {
