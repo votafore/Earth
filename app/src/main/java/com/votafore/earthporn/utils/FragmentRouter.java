@@ -92,10 +92,6 @@ public class FragmentRouter {
         }
     }
 
-
-
-
-
     public void goToDataBaseFragment(){
 
         fragmentManager.beginTransaction()
@@ -122,5 +118,33 @@ public class FragmentRouter {
         fragmentManager.beginTransaction()
                 .replace(fragmentContainer, FragmentDialog.newInstance())
                 .commit();
+    }
+
+
+    public int getCurrentFragmentMenuID(){
+        Fragment currentFragment = fragmentManager.findFragmentById(fragmentContainer);
+
+        int result = 0;
+
+        if (currentFragment instanceof FragmentList)
+            result = R.id.item_main;
+
+        if (currentFragment instanceof FragmentGallery)
+            result = R.id.item_gallery;
+
+        if (currentFragment instanceof FragmentDataBase)
+            result = R.id.item_database;
+
+        if (currentFragment instanceof FragmentService)
+            result = R.id.item_service;
+
+        if (currentFragment instanceof FragmentBroadcast)
+            result = R.id.item_broadcast;
+
+        if (currentFragment instanceof FragmentDialog)
+            result = R.id.item_dialogs;
+
+
+        return result;
     }
 }
