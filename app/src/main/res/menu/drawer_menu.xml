@@ -25,5 +25,9 @@
             android:id="@+id/item_broadcast"
             android:title="Test broadcast"/>
 
+        <item
+            android:id="@+id/item_dialogs"
+            android:title="Test dialog"/>
+
     </group>
 </menu>

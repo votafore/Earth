@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -96,7 +97,7 @@ public class ActivityMain extends AppCompatActivity {
 
         NavigationView.OnNavigationItemSelectedListener drawerListener = new NavigationView.OnNavigationItemSelectedListener() {
 
-            private int lastSelectedItem = R.id.item_main;
+            private int lastSelectedItem = router.getCurrentFragmentMenuID() == 0 ? R.id.item_main : router.getCurrentFragmentMenuID();
 
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -122,7 +123,6 @@ public class ActivityMain extends AppCompatActivity {
                         router.goToImageListFragment();
                         return true;
 
-
                     case R.id.item_database:
                         router.goToDataBaseFragment();
                         return true;
@@ -134,6 +134,11 @@ public class ActivityMain extends AppCompatActivity {
                     case R.id.item_broadcast:
                         router.goToBroadcastFragment();
                         return true;
+
+                    case R.id.item_dialogs:
+                        router.goToDialogFragment();
+                        return true;
+
 
                     default:
                         return false;

@@ -12,6 +12,7 @@ import com.votafore.earthporn.ActivityMain;
 import com.votafore.earthporn.R;
 import com.votafore.earthporn.fragments.FragmentBroadcast;
 import com.votafore.earthporn.fragments.FragmentDataBase;
+import com.votafore.earthporn.fragments.FragmentDialog;
 import com.votafore.earthporn.fragments.FragmentFullImage;
 import com.votafore.earthporn.fragments.FragmentGallery;
 import com.votafore.earthporn.fragments.FragmentList;
@@ -91,10 +92,6 @@ public class FragmentRouter {
         }
     }
 
-
-
-
-
     public void goToDataBaseFragment(){
 
         fragmentManager.beginTransaction()
@@ -114,5 +111,40 @@ public class FragmentRouter {
         fragmentManager.beginTransaction()
                 .replace(fragmentContainer, FragmentBroadcast.newInstance())
                 .commit();
+    }
+
+    public void goToDialogFragment() {
+
+        fragmentManager.beginTransaction()
+                .replace(fragmentContainer, FragmentDialog.newInstance())
+                .commit();
+    }
+
+
+    public int getCurrentFragmentMenuID(){
+        Fragment currentFragment = fragmentManager.findFragmentById(fragmentContainer);
+
+        int result = 0;
+
+        if (currentFragment instanceof FragmentList)
+            result = R.id.item_main;
+
+        if (currentFragment instanceof FragmentGallery)
+            result = R.id.item_gallery;
+
+        if (currentFragment instanceof FragmentDataBase)
+            result = R.id.item_database;
+
+        if (currentFragment instanceof FragmentService)
+            result = R.id.item_service;
+
+        if (currentFragment instanceof FragmentBroadcast)
+            result = R.id.item_broadcast;
+
+        if (currentFragment instanceof FragmentDialog)
+            result = R.id.item_dialogs;
+
+
+        return result;
     }
 }

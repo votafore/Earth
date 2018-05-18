@@ -17,4 +17,9 @@
     <string name="shared_preferences_file_name">settings</string>
     <string name="shared_preferences_database_type">database_type</string>
 
+    <string name="long_text"> some long text
+        \n bla bla bla bla bla bla bla bla bla bla
+        \n bla bla bla bla bla bla bla bla bla bla
+    </string>
+
 </resources>
