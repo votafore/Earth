@@ -11,6 +11,7 @@ import android.view.View;
 import com.votafore.earthporn.ActivityMain;
 import com.votafore.earthporn.R;
 import com.votafore.earthporn.fragments.FragmentBroadcast;
+import com.votafore.earthporn.fragments.FragmentCustomText;
 import com.votafore.earthporn.fragments.FragmentDataBase;
 import com.votafore.earthporn.fragments.FragmentDialog;
 import com.votafore.earthporn.fragments.FragmentFullImage;
@@ -120,6 +121,13 @@ public class FragmentRouter {
                 .commit();
     }
 
+    public void goToCustomTextFragment(){
+
+        fragmentManager.beginTransaction()
+                .replace(fragmentContainer, FragmentCustomText.newInstance())
+                .commit();
+    }
+
 
     public int getCurrentFragmentMenuID(){
         Fragment currentFragment = fragmentManager.findFragmentById(fragmentContainer);
@@ -144,6 +152,8 @@ public class FragmentRouter {
         if (currentFragment instanceof FragmentDialog)
             result = R.id.item_dialogs;
 
+        if (currentFragment instanceof FragmentCustomText)
+            result = R.id.item_customText;
 
         return result;
     }
