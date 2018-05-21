@@ -6,9 +6,19 @@
     android:layout_height="match_parent">
 
     <EditText
+        android:id="@+id/test_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:bufferType="spannable"
         tool:text="sdl;kfjs"/>
+
+    <TextView
+        android:id="@+id/test_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:bufferType="spannable"
+        android:textSize="32sp"/>
 
 </LinearLayout>

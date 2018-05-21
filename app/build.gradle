@@ -10,8 +10,8 @@ android {
         applicationId "com.votafore.earthporn"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 10
-        versionName "1.10"
+        versionCode 11
+        versionName "1.11"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
