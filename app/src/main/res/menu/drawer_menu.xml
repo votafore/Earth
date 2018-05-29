@@ -29,5 +29,9 @@
             android:id="@+id/item_dialogs"
             android:title="Test dialog"/>
 
+        <item
+            android:id="@+id/item_customText"
+            android:title="colored text"/>
+
     </group>
 </menu>

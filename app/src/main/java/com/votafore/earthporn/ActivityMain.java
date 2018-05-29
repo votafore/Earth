@@ -139,6 +139,9 @@ public class ActivityMain extends AppCompatActivity {
                         router.goToDialogFragment();
                         return true;
 
+                    case R.id.item_customText:
+                        router.goToCustomTextFragment();
+                        return true;
 
                     default:
                         return false;
