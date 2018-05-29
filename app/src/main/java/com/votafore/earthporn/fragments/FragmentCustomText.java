@@ -79,7 +79,7 @@ public class FragmentCustomText extends Fragment {
                     spans.add(index, new CustomSpanner());
                 }
 
-                s.removeSpan(ForegroundColorSpan.class);
+                s.clearSpans();
 
                 for (ForegroundColorSpan span: spans){
                     s.setSpan(span, spans.indexOf(span), spans.indexOf(span)+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
