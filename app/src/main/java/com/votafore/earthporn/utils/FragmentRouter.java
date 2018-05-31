@@ -17,6 +17,7 @@ import com.votafore.earthporn.fragments.FragmentDialog;
 import com.votafore.earthporn.fragments.FragmentFullImage;
 import com.votafore.earthporn.fragments.FragmentGallery;
 import com.votafore.earthporn.fragments.FragmentList;
+import com.votafore.earthporn.fragments.FragmentRx;
 import com.votafore.earthporn.fragments.FragmentService;
 
 public class FragmentRouter {
@@ -128,6 +129,13 @@ public class FragmentRouter {
                 .commit();
     }
 
+    public void goToRxFragment(){
+
+        fragmentManager.beginTransaction()
+                .replace(fragmentContainer, FragmentRx.newInstance())
+                .commit();
+    }
+
 
     public int getCurrentFragmentMenuID(){
         Fragment currentFragment = fragmentManager.findFragmentById(fragmentContainer);
@@ -154,6 +162,9 @@ public class FragmentRouter {
 
         if (currentFragment instanceof FragmentCustomText)
             result = R.id.item_customText;
+
+        if (currentFragment instanceof FragmentRx)
+            result = R.id.item_rx;
 
         return result;
     }

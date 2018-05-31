@@ -33,5 +33,9 @@
             android:id="@+id/item_customText"
             android:title="colored text"/>
 
+        <item
+            android:id="@+id/item_rx"
+            android:title="Rx android"/>
+
     </group>
 </menu>
