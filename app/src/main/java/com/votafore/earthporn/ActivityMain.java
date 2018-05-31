@@ -143,6 +143,10 @@ public class ActivityMain extends AppCompatActivity {
                         router.goToCustomTextFragment();
                         return true;
 
+                    case R.id.item_rx:
+                        router.goToRxFragment();
+                        return true;
+
                     default:
                         return false;
                 }
